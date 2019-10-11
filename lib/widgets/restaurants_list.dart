@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lunch_app/providers/general_info.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/restaurants.dart';
@@ -22,34 +23,44 @@ class RestaurantsList extends StatelessWidget {
               width: double.infinity,
               child: Card(
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                  child: Container(
-                    height: 100,
-                child: InkWell(
-                  onTap: () => navigateToRestaurant(context, restaurants[i].id),
-                  child: Hero(
-                    transitionOnUserGestures: true,
-                    tag: 'restaurantHero' + restaurants[i].id,
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: <Widget>[
-                        Image.asset( // TODO: remove this asset and load real image
-                            'assets/test.jpg',
-                            fit: BoxFit.fitWidth,
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                                colors: [Colors.transparent, Color.fromRGBO(0, 0, 0, 0.3)]
-                            )
+                  child: Stack(
+                    fit: StackFit.passthrough,
+                    children: <Widget>[
+                      Container(
+                        height: 100,
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20.0)),
+                        child: Hero(
+                          transitionOnUserGestures: true,
+                          tag: 'restaurantHero' + restaurants[i].id,
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () => navigateToRestaurant(context, restaurants[i].id),
+                              child: ClipRRect(
+                                borderRadius: new BorderRadius.circular(20.0),
+                                child: ColorFiltered(
+                                  colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.darken),
+                                  child: Image.asset( // TODO: remove this asset and load real image
+                                    'assets/test.jpg',
+                                    fit: BoxFit.fitWidth,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-              )),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Container(
+                          child: Text(
+                            restaurants[i].name != null ? restaurants[i].name : '',
+                            style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700),
+                          ),
+                        ),
+                      )
+                    ],
+                  )),
             )
           ]),
         ),
@@ -58,8 +69,33 @@ class RestaurantsList extends StatelessWidget {
   }
 
   navigateToRestaurant(BuildContext ctx, String id) {
-    Navigator.of(ctx).push(CupertinoPageRoute(builder: (_) {
-      return RestaurantDetailScreen(id);
-    }));
+    Provider.of<GeneralInfo>(ctx).initMenuFoodCategoryBasedOnRestaurantFoodCategory();
+    Navigator.of(ctx).push(SlideBottomRoute(page: RestaurantDetailScreen(id)));
   }
+}
+
+class SlideBottomRoute extends PageRouteBuilder {
+  final Widget page;
+  SlideBottomRoute({this.page})
+      : super(
+    pageBuilder: (
+        BuildContext context,
+        Animation<double> animation,
+        Animation<double> secondaryAnimation,
+        ) =>
+    page,
+    transitionsBuilder: (
+        BuildContext context,
+        Animation<double> animation,
+        Animation<double> secondaryAnimation,
+        Widget child,
+        ) =>
+        SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, 1),
+            end: Offset.zero,
+          ).animate(animation),
+          child: child,
+        ),
+  );
 }

@@ -1,19 +1,31 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-
-import '../providers/restaurant.dart';
-import 'foodCategory.dart';
-import 'menu.dart';
 
 class GeneralInfo with ChangeNotifier {
   DateTime fromDate;
   DateTime toDate;
+  bool _isFetching = false;
   List<String> _foodCategoryFilter = [];
+
+  bool get isFetching  {
+    return _isFetching;
+  }
 
   List<String> get foodCategoryFilter {
     return [..._foodCategoryFilter];
+  }
+  List<String> _menuFoodCategoryFilter = [];
+
+  List<String> get menuFoodCategoryFilter {
+    return [..._menuFoodCategoryFilter];
+  }
+
+  initMenuFoodCategoryBasedOnRestaurantFoodCategory() {
+    this._menuFoodCategoryFilter = [...this.foodCategoryFilter];
+  }
+
+  setFetching(bool fetching) {
+    this._isFetching = fetching;
+    notifyListeners();
   }
 
   setDateRange(DateTime fromDate, DateTime toDate) {
@@ -27,6 +39,15 @@ class GeneralInfo with ChangeNotifier {
       _foodCategoryFilter.remove(foodCategoryId);
     } else {
       _foodCategoryFilter.add(foodCategoryId);
+    }
+    notifyListeners();
+  }
+
+  toggleMenuFoodCategory(String foodCategoryId) {
+    if (menuFoodCategoryFilter.contains(foodCategoryId)) {
+      _menuFoodCategoryFilter.remove(foodCategoryId);
+    } else {
+      _menuFoodCategoryFilter.add(foodCategoryId);
     }
     notifyListeners();
   }

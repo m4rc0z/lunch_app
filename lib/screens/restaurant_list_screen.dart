@@ -27,11 +27,7 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen> {
   @override
   void didChangeDependencies() {
     if (_isInit) {
-      setState(() {
-        _isLoading = true;
-      });
-      // TODO: adapt to use current week
-
+      Provider.of<GeneralInfo>(context).setFetching(true);
       final weekdays = new DateUtil().getWeekDaysForDate(DateTime.now());
       if (weekdays.length > 0) {
         var fromDate = weekdays[0];
@@ -40,18 +36,17 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen> {
         Provider.of<GeneralInfo>(context).setDateRange(fromDate, toDate);
         Provider.of<Restaurants>(context)
             .fetchAndSetRestaurants(
-            Provider.of<GeneralInfo>(context).foodCategoryFilter,
-            Provider.of<GeneralInfo>(context).fromDate,
-            Provider.of<GeneralInfo>(context).toDate)
+                Provider.of<GeneralInfo>(context).foodCategoryFilter,
+                Provider.of<GeneralInfo>(context).fromDate,
+                Provider.of<GeneralInfo>(context).toDate)
             .then((_) {
           setState(() {
-            _isLoading = false;
+            Provider.of<GeneralInfo>(context).setFetching(false);
           });
         });
         Provider.of<FoodCategories>(context).fetchAndSetCategories(
             Provider.of<GeneralInfo>(context).fromDate,
-            Provider.of<GeneralInfo>(context).toDate
-        );
+            Provider.of<GeneralInfo>(context).toDate);
       }
     }
     _isInit = false;
@@ -83,7 +78,7 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen> {
               preferredSize: Size.fromHeight(100)),
         ),
       ),
-      body: _isLoading
+      body: Provider.of<GeneralInfo>(context).isFetching
           ? Center(
               child: CircularProgressIndicator(),
             )

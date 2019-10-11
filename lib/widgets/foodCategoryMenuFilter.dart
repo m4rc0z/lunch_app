@@ -31,7 +31,6 @@ class _FoodCategoryMenuFilterState extends State<FoodCategoryMenuFilter> {
 //      this.foodCategoryFilter.add(id);
     }
     Provider.of<Menus>(context).fetchAndSetMenus(
-        this.foodCategoryFilter,
         this.restaurantId,
         Provider.of<GeneralInfo>(context).fromDate,
         Provider.of<GeneralInfo>(context).toDate
@@ -58,6 +57,22 @@ class _FoodCategoryMenuFilterState extends State<FoodCategoryMenuFilter> {
   @override
   Widget build(BuildContext context) {
     return Container(child: FoodCategoryFilter(this.foodCategoryFilter, this.filterCategories),
+    );
+  }
+}
+
+// TODO: fix naming and unsued FoodCategoryMenuFilter?
+class FoodCategoryMenuTestFilter extends StatelessWidget {
+  final String restaurantId;
+
+  FoodCategoryMenuTestFilter(this.restaurantId);
+
+  @override
+  Widget build(BuildContext context) {
+    filterCategories(String id) {
+      Provider.of<GeneralInfo>(context).toggleMenuFoodCategory(id);
+    }
+    return Container(child: FoodCategoryFilter(Provider.of<GeneralInfo>(context).menuFoodCategoryFilter, filterCategories),
     );
   }
 }
