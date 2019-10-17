@@ -17,22 +17,36 @@ class Menus with ChangeNotifier {
     return [..._items];
   }
 
-  List<Menu> getMenuByDateAndCategory(String restaurantId, DateTime date, List<String> foodCategoryFilter) {
+  List<Menu> getMenuByDateAndCategory(String restaurantId, DateTime date,
+      List<String> foodCategoryFilter) {
     var filteredMenus = this._items
-        .where((restaurantMenu) => restaurantMenu.id == restaurantId &&
-        restaurantMenu.menu.date.day == date.day &&
-        restaurantMenu.menu.date.month == date.month &&
-        restaurantMenu.menu.date.year == date.year &&
-        foodCategoryFilter.every((fc) => restaurantMenu.menu.categories.indexWhere((c) => c.id == fc) != -1)
-    )
+        .where(
+            (restaurantMenu) =>
+        restaurantMenu.id == restaurantId &&
+            restaurantMenu.menu.date.day == date.day &&
+            restaurantMenu.menu.date.month == date.month &&
+            restaurantMenu.menu.date.year == date.year &&
+            (
+                foodCategoryFilter.length > 0
+                    ? foodCategoryFilter
+                    .firstWhere((fc) =>
+                restaurantMenu.menu.categories.indexWhere((c) => c.id == fc) !=
+                    -1,
+                    orElse: () => null
+                ) != null
+                    : true
+            )
+        )
         .map((filteredItem) => filteredItem.menu)
         .toList();
     return filteredMenus.length > 0 ? filteredMenus : [];
   }
 
-  Future<void> fetchAndSetMenus(String restaurantId, DateTime fromDate, DateTime toDate) async {
+  Future<void> fetchAndSetMenus(String restaurantId, DateTime fromDate,
+      DateTime toDate) async {
     var url = environment['baseUrl'] + '/restaurants/' + restaurantId +
-          '/menus?fromDate='+ fromDate.toIso8601String() +'&toDate=' + toDate.toIso8601String();
+        '/menus?fromDate=' + fromDate.toIso8601String() + '&toDate=' +
+        toDate.toIso8601String();
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as List<dynamic>;
@@ -53,7 +67,8 @@ class Menus with ChangeNotifier {
 
         menu['categories'].forEach((category) {
           loadedFoodCategories.add(
-            FoodCategory(id: category['_id'], description: category['description'])
+              FoodCategory(
+                  id: category['_id'], description: category['description'])
           );
         });
 
@@ -65,49 +80,8 @@ class Menus with ChangeNotifier {
                 categories: loadedFoodCategories,
                 date: DateTime.parse(menu['date'])));
       });
-      _items = loadedMenus.map((menu) => RestaurantMenu(id: restaurantId, menu: menu)).toList();
-      notifyListeners();
-    } catch (error) {
-      throw (error);
-    }
-  }
-  
-  Future<void> fetchAndSetMenus2(String restaurantId, DateTime fromDate, DateTime toDate) async {
-    var url = environment['baseUrl'] + '/restaurants/' + restaurantId +
-          '/menus?fromDate='+ fromDate.toIso8601String() +'&toDate=' + toDate.toIso8601String();
-    try {
-      final response = await http.get(url);
-      final extractedData = json.decode(response.body) as List<dynamic>;
-      final List<Menu> loadedMenus = [];
-      extractedData.forEach((menu) {
-        final List<Course> loadedCourses = [];
-        final List<FoodCategory> loadedFoodCategories = [];
-
-        menu['courses'].forEach((course) {
-          loadedCourses.add(
-              Course(
-                  id: course['_id'],
-                  course: course['course'],
-                  description: course['description']
-              )
-          );
-        });
-
-        menu['categories'].forEach((category) {
-          loadedFoodCategories.add(
-            FoodCategory(id: category['_id'], description: category['description'])
-          );
-        });
-
-        loadedMenus.add(
-            Menu(
-                id: menu['_id'],
-                price: menu['price'],
-                courses: loadedCourses,
-                categories: loadedFoodCategories,
-                date: DateTime.parse(menu['date'])));
-      });
-      _items = loadedMenus.map((menu) => RestaurantMenu(id: restaurantId, menu: menu)).toList();
+      _items = loadedMenus.map((menu) =>
+          RestaurantMenu(id: restaurantId, menu: menu)).toList();
       notifyListeners();
     } catch (error) {
       throw (error);

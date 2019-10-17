@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 
 import '../env.dart';
 import '../providers/restaurant.dart';
@@ -15,7 +14,13 @@ class Restaurants with ChangeNotifier {
     return [..._items];
   }
 
+  bool _isFetching = false;
+  bool get isFetching  => _isFetching;
+
   Future<void> fetchAndSetRestaurants(List<String> foodCategoryFilter, DateTime fromDate, DateTime toDate) async {
+    _isFetching = true;
+    notifyListeners();
+
     var url;
     if (foodCategoryFilter.length > 0) {
       url = environment['baseUrl'] + '/restaurants?categories=' + foodCategoryFilter.join(',') + '&fromDate='+ fromDate.toIso8601String() +'&toDate=' + toDate.toIso8601String();
@@ -38,8 +43,11 @@ class Restaurants with ChangeNotifier {
         ));
       });
       _items = loadedRestaurant;
+      _isFetching = false;
       notifyListeners();
     } catch (error) {
+      _isFetching = false;
+      notifyListeners();
       throw (error);
     }
   }

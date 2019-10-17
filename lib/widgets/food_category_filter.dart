@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:lunch_app/providers/foodCategories.dart';
-import 'package:provider/provider.dart';
+import 'package:lunch_app/providers/foodCategory.dart';
 
 class FoodCategoryFilter extends StatelessWidget {
   final List<String> foodCategoryFilter;
+  final List<FoodCategory> foodCategories;
   final void Function(String) filterChanged;
 
-  FoodCategoryFilter(this.foodCategoryFilter, this.filterChanged);
+  FoodCategoryFilter(this.foodCategories, this.foodCategoryFilter, this.filterChanged);
 
   @override
   Widget build(BuildContext context) {
-    final foodCategoryData = Provider.of<FoodCategories>(context);
-    final foodCategories = foodCategoryData.items;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: Column(
+      child: this.foodCategories.length > 0
+          ? Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container( // TODO: maybe use chip istead of own container
@@ -29,7 +28,7 @@ class FoodCategoryFilter extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 7.0),
             child: Row(children: <Widget>[
-              ...foodCategories.map((fc) {
+              ...this.foodCategories.map((fc) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 3.0),
                   child: Container(
@@ -55,7 +54,8 @@ class FoodCategoryFilter extends StatelessWidget {
             ]),
           ),
         ],
-      ),
+      )
+    : Container()
     );
   }
 

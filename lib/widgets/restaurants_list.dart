@@ -7,6 +7,10 @@ import '../providers/restaurants.dart';
 import '../screens/restaurant_detail_screen.dart';
 
 class RestaurantsList extends StatelessWidget {
+  final int currentIndex;
+
+  RestaurantsList(this.currentIndex);
+
   @override
   Widget build(BuildContext context) {
     final restaurantsData = Provider.of<Restaurants>(context);
@@ -70,7 +74,7 @@ class RestaurantsList extends StatelessWidget {
 
   navigateToRestaurant(BuildContext ctx, String id) {
     Provider.of<GeneralInfo>(ctx).initMenuFoodCategoryBasedOnRestaurantFoodCategory();
-    Navigator.of(ctx).push(SlideBottomRoute(page: RestaurantDetailScreen(id)));
+    Navigator.of(ctx).push(SlideBottomRoute(page: RestaurantDetailScreen(id, currentIndex)));
   }
 }
 

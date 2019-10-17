@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lunch_app/providers/foodCategories.dart';
 import 'package:lunch_app/providers/general_info.dart';
 import 'package:lunch_app/providers/menus.dart';
 import 'package:provider/provider.dart';
@@ -27,14 +28,12 @@ class _FoodCategoryMenuFilterState extends State<FoodCategoryMenuFilter> {
     if (this.foodCategoryFilter.contains(id)) {
       this.foodCategoryFilter.removeAt(this.foodCategoryFilter.indexOf(id));
     } else {
-      this.foodCategoryFilter = [...this.foodCategoryFilter, id];
-//      this.foodCategoryFilter.add(id);
+      this.foodCategoryFilter = [...this.foodCategoryFilter, id]; //      this.foodCategoryFilter.add(id);
     }
     Provider.of<Menus>(context).fetchAndSetMenus(
         this.restaurantId,
         Provider.of<GeneralInfo>(context).fromDate,
-        Provider.of<GeneralInfo>(context).toDate
-    );
+        Provider.of<GeneralInfo>(context).toDate);
   }
 
   @override
@@ -45,9 +44,8 @@ class _FoodCategoryMenuFilterState extends State<FoodCategoryMenuFilter> {
   @override
   void didChangeDependencies() {
     if (_isInit) {
-      this.foodCategoryFilter = Provider
-          .of<GeneralInfo>(context)
-          .foodCategoryFilter;
+      this.foodCategoryFilter =
+          Provider.of<GeneralInfo>(context).foodCategoryFilter;
     }
     _isInit = false;
 
@@ -56,7 +54,12 @@ class _FoodCategoryMenuFilterState extends State<FoodCategoryMenuFilter> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(child: FoodCategoryFilter(this.foodCategoryFilter, this.filterCategories),
+    return Container(
+      child: FoodCategoryFilter(
+        Provider.of<FoodCategories>(context).menuItems,
+        this.foodCategoryFilter,
+        this.filterCategories,
+      ),
     );
   }
 }
@@ -72,7 +75,13 @@ class FoodCategoryMenuTestFilter extends StatelessWidget {
     filterCategories(String id) {
       Provider.of<GeneralInfo>(context).toggleMenuFoodCategory(id);
     }
-    return Container(child: FoodCategoryFilter(Provider.of<GeneralInfo>(context).menuFoodCategoryFilter, filterCategories),
+
+    return Container(
+      child: FoodCategoryFilter(
+        Provider.of<FoodCategories>(context).menuItems,
+        Provider.of<GeneralInfo>(context).menuFoodCategoryFilter,
+        filterCategories,
+      ),
     );
   }
 }

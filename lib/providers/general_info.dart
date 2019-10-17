@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 class GeneralInfo with ChangeNotifier {
   DateTime fromDate;
   DateTime toDate;
-  bool _isFetching = false;
+  List<DateTime> _weekDays;
   List<String> _foodCategoryFilter = [];
 
-  bool get isFetching  {
-    return _isFetching;
+  List<DateTime> get weekDays  {
+    return _weekDays != null ? [..._weekDays] : [];
   }
 
   List<String> get foodCategoryFilter {
@@ -23,14 +23,10 @@ class GeneralInfo with ChangeNotifier {
     this._menuFoodCategoryFilter = [...this.foodCategoryFilter];
   }
 
-  setFetching(bool fetching) {
-    this._isFetching = fetching;
-    notifyListeners();
-  }
-
-  setDateRange(DateTime fromDate, DateTime toDate) {
+  setDateRangeAndWeekDays(DateTime fromDate, DateTime toDate, List<DateTime> weekDays) {
     this.fromDate = fromDate;
     this.toDate = toDate;
+    this._weekDays = weekDays;
     notifyListeners();
   }
 
@@ -49,6 +45,11 @@ class GeneralInfo with ChangeNotifier {
     } else {
       _menuFoodCategoryFilter.add(foodCategoryId);
     }
+    notifyListeners();
+  }
+
+  resetRestaurantFoodCategoryFilter() {
+    _foodCategoryFilter = [];
     notifyListeners();
   }
 
