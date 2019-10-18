@@ -96,6 +96,14 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
     super.didChangeDependencies();
   }
 
+  void updateCategoriesAndResetFilters(newPage) {
+    Provider.of<GeneralInfo>(context).resetMenuFoodCategoryFilter();
+
+    Provider.of<FoodCategories>(context).setMenuCategories(
+        Provider.of<Menus>(context).getMenuByDateAndCategory(this.restaurantId, weekDays[newPage], Provider.of<GeneralInfo>(context).menuFoodCategoryFilter)
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,107 +113,98 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
             children: <Widget>[
               Container(
                 height: 350,
-                child: AnimatedSize(
-                    vsync: this,
-                    duration: Duration(milliseconds: 200),
-                        child: Stack(
-                          fit: StackFit.expand,
-                          children: <Widget>[
-                            Positioned(
-                              top: 0,
-                              left: 0,
-                              right: 0,
-                              child: Hero(
-                                transitionOnUserGestures: true,
-                                tag: 'restaurantHero' + this.restaurantId,
-                                child: Material(
-                                  type: MaterialType.transparency,
-                                  child: ColorFiltered(
-                                    colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.darken),
-                                    child: Container(
-                                      child: Image.asset( // TODO: remove this asset and load real image
-                                        'assets/test.jpg',
-                                        fit: BoxFit.fitWidth,
-                                      ),
-                                    ),
-                                  ),
-                                  ),
-                                ),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: <Widget>[
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: Hero(
+                        transitionOnUserGestures: true,
+                        tag: 'restaurantHero' + this.restaurantId,
+                        child: Material(
+                          type: MaterialType.transparency,
+                          child: ColorFiltered(
+                            colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.darken),
+                            child: Container(
+                              child: Image.asset( // TODO: remove this asset and load real image
+                                'assets/test.jpg',
+                                fit: BoxFit.fitWidth,
+                              ),
                             ),
-                            Positioned(
-                              top: 175,
-                              left: 0,
-                              right: 0,
-                              child: RestaurantDetailHeader(
-                                _restaurant,
-                                this.currentIndex,
-                                    (newPage) {
-                                      Provider.of<FoodCategories>(context)
-                                          .fetchAndSetMenuCategories(
-                                        this.weekDays[newPage],
-                                        this.weekDays[newPage],
-                                      );
+                          ),
+                          ),
+                        ),
+                    ),
+                    Positioned(
+                      top: 175,
+                      left: 0,
+                      right: 0,
+                      child: RestaurantDetailHeader(
+                        _restaurant,
+                        this.currentIndex,
+                            (newPage) {
+                              updateCategoriesAndResetFilters(newPage);
                                   // TODO: fetch and set categories for menuCategories -> add new function
-                                  this._tabController.jumpToPage(newPage);
-                                },
-                                this.weekDays,
-                              ),
-                            ),
-                            Positioned(
-                              top: 0.0,
-                              left: 0.0,
-                              right: 0.0,
-                              child: AppBar(
-                                leading: new IconButton(
-                                  icon: new Icon(
-                                    Icons.close,
-                                    color: Colors.white,
-                                    size: 35,
-                                  ),
-                                  onPressed: () => Navigator.of(context).pop(),
-                                ),
-                                elevation: 0,
-                                backgroundColor: Colors.transparent,
-                              ),
-                            ),
-                          ]
-                            ),
+                          this._tabController.jumpToPage(newPage);
+                        },
+                        this.weekDays,
                       ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                child: AnimatedSize(
-                  vsync: this,
-                  duration: Duration(milliseconds: 200),
-                  child: _restaurant != null ?
-                  FoodCategoryMenuTestFilter(
-                      _restaurant != null ? _restaurant.id : null,
-                  )
-                  : Container(),
-                ),
+                    ),
+                    Positioned(
+                      top: 0.0,
+                      left: 0.0,
+                      right: 0.0,
+                      child: AppBar(
+                        leading: new IconButton(
+                          icon: new Icon(
+                            Icons.close,
+                            color: Colors.white,
+                            size: 35,
+                          ),
+                          onPressed: () => Navigator.of(context).pop(),
+                        ),
+                        elevation: 0,
+                        backgroundColor: Colors.transparent,
+                      ),
+                    ),
+                  ]
+                    ),
               ),
               _isLoading
-                  ? Center(
+                  ? Expanded(child:Center(
                       child: CircularProgressIndicator(),
-                    )
-                  : Expanded(
-                      child: PageView(
-                        controller: _tabController,
-                        onPageChanged: (newPage) {
-                          setState(() {
-                            this.currentIndex = newPage;
-                            Provider.of<FoodCategories>(context)
-                                .fetchAndSetMenuCategories(
-                              this.weekDays[newPage],
-                              this.weekDays[newPage],
-                            );
-                          });
-                        },
-                        children: _tabList,
-                      ),
-                    )
-            ],
-        ),
+                    ))
+                  : Flexible(child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: AnimatedSize(
+                      vsync: this,
+                      duration: Duration(milliseconds: 200),
+                      child: _restaurant != null ?
+                      FoodCategoryMenuTestFilter(
+                        _restaurant != null ? _restaurant.id : null,
+                      )
+                          : Container(),
+                    ),
+                  ),
+                  Flexible(
+                    child: PageView(
+                      controller: _tabController,
+                      onPageChanged: (newPage) {
+                        setState(() {
+                          this.currentIndex = newPage;
+                          updateCategoriesAndResetFilters(newPage);
+                        });
+                      },
+                      children: _tabList,
+                    ),
+                  )
+                ],)
+              )])
       ),
     );
   }

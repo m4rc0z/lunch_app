@@ -53,4 +53,9 @@ class GeneralInfo with ChangeNotifier {
     notifyListeners();
   }
 
+  resetMenuFoodCategoryFilter() {
+    _menuFoodCategoryFilter = [];
+    notifyListeners();
+  }
+
 }

@@ -84,80 +84,92 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0.0,
-        backgroundColor: Colors.white,
-        title: Container(
-          child: Text(
-            'LUNCH MENU',
-            style: TextStyle(color: Colors.black),
-          ),
-        ),
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(150),
-          child: Expanded(
-            flex: 2,
-            child: Container(
-              constraints: BoxConstraints.expand(),
-              child: weekdays != null && weekdays.length > 0
-                  ? WeekDayNavigationBar(
-                      weekdays,
-                      currentIndex,
-                      (selectedIndex) { // TODO: use function
-                        setState(() {
-                          currentIndex = selectedIndex;
-                          _isLoadingCategories = true;
-                          _isLoadingRestaurants = true;
-                        });
-
-                        Provider.of<FoodCategories>(context)
-                            .fetchAndSetRestaurantCategories(
-                          weekdays[selectedIndex],
-                          weekdays[selectedIndex],
-                        )
-                            .then((_) {
-                          setState(() {
-                            _isLoadingCategories = false;
-                          });
-                        });
-
-                        Provider.of<Restaurants>(context)
-                            .fetchAndSetRestaurants(
-                          Provider.of<GeneralInfo>(context).foodCategoryFilter,
-                          weekdays[selectedIndex],
-                          weekdays[selectedIndex],
-                        )
-                            .then((_) {
-                          setState(() {
-                            _isLoadingRestaurants = false;
-                          });
-                        });
-
-                      },
-                    )
-                  : Container(),
+        appBar: AppBar(
+          elevation: 0.0,
+          backgroundColor: Colors.white,
+          title: Container(
+            child: Text(
+              'LUNCH MENU',
+              style: TextStyle(color: Colors.black),
             ),
           ),
-        ),
-      ),
-      body: Container(
-        color: Colors.white, // TODO: check how to set background color globally
-        child: Column(
-          children: <Widget>[
-            AnimatedSize(
-              vsync: this,
-              duration: Duration(milliseconds: 200),
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 20.0),
-                child: FoodCategoryRestaurantFilter(),
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(150),
+            child: Expanded(
+              flex: 2,
+              child: Container(
+                constraints: BoxConstraints.expand(),
+                child: weekdays != null && weekdays.length > 0
+                    ? WeekDayNavigationBar(
+                        weekdays,
+                        currentIndex,
+                        (selectedIndex) {
+                          // TODO: use function
+                          setState(() {
+                            currentIndex = selectedIndex;
+                            _isLoadingCategories = true;
+                            _isLoadingRestaurants = true;
+                          });
+
+                          Provider.of<GeneralInfo>(context)
+                              .resetRestaurantFoodCategoryFilter();
+
+                          Provider.of<FoodCategories>(context)
+                              .fetchAndSetRestaurantCategories(
+                            weekdays[selectedIndex],
+                            weekdays[selectedIndex],
+                          )
+                              .then((_) {
+                            setState(() {
+                              _isLoadingCategories = false;
+                            });
+                          });
+
+                          Provider.of<Restaurants>(context)
+                              .fetchAndSetRestaurants(
+                            Provider.of<GeneralInfo>(context)
+                                .foodCategoryFilter,
+                            weekdays[selectedIndex],
+                            weekdays[selectedIndex],
+                          )
+                              .then((_) {
+                            setState(() {
+                              _isLoadingRestaurants = false;
+                            });
+                          });
+                        },
+                      )
+                    : Container(),
               ),
             ),
-            Expanded(
-              child: RestaurantsList(currentIndex),
-            ),
-          ],
+          ),
         ),
-      ),
-    );
+        body: Container(
+          color: Colors.white,
+          child: !_isLoadingCategories || !_isLoadingRestaurants
+              ? Container(
+                  // TODO: check how to set background color globally
+                  child: Column(
+                    children: <Widget>[
+                      AnimatedSize(
+                        vsync: this,
+                        duration: Duration(milliseconds: 200),
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 20.0),
+                          child: FoodCategoryRestaurantFilter(),
+                        ),
+                      ),
+                      Expanded(
+                        child: RestaurantsList(currentIndex),
+                      ),
+                    ],
+                  ),
+                )
+              : Container(
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+        ));
   }
 }
