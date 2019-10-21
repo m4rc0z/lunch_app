@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:lunch_app/providers/favorites.dart';
 import 'package:lunch_app/providers/foodCategories.dart';
 import 'package:lunch_app/providers/general_info.dart';
 import 'package:lunch_app/providers/restaurants.dart';
@@ -165,6 +166,21 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
                           ),
                           onPressed: () => Navigator.of(context).pop(),
                         ),
+                        actions: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: new IconButton(
+                              icon: new Icon(
+                                Provider.of<Favorites>(context).getFavoriteStatus(restaurantId) ?
+                                  Icons.favorite
+                                : Icons.favorite_border,
+                                color: Colors.white,
+                                size: 35,
+                              ),
+                              onPressed: () => Provider.of<Favorites>(context).toggleFavorite(restaurantId),
+                            ),
+                          ),
+                        ],
                         elevation: 0,
                         backgroundColor: Colors.transparent,
                       ),

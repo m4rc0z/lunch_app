@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lunch_app/providers/favorites.dart';
 import 'package:lunch_app/providers/foodCategories.dart';
 import 'package:lunch_app/providers/general_info.dart';
 import 'package:lunch_app/widgets/foodCategoryRestaurantFilter.dart';
@@ -30,6 +31,7 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen>
   @override
   void didChangeDependencies() {
     if (_isInit) {
+      Provider.of<Favorites>(context).initDB();
       var todayDateTime = DateTime.now();
       weekdays = new DateUtil().getWeekDaysForDate(todayDateTime);
       var today = weekdays.firstWhere((weekDay) {
@@ -87,10 +89,12 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen>
         appBar: AppBar(
           elevation: 0.0,
           backgroundColor: Colors.white,
-          title: Container(
-            child: Text(
-              'LUNCH MENU',
-              style: TextStyle(color: Colors.black),
+          title: Center(
+            child: Container(
+              child: Text(
+                'LUNCH MENU',
+                style: TextStyle(color: Colors.black),
+              ),
             ),
           ),
           bottom: PreferredSize(
