@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lunch_app/providers/favorites.dart';
 import 'package:lunch_app/providers/foodCategories.dart';
 import 'package:lunch_app/providers/general_info.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<Menus>(builder: (_) => Menus()),
         ChangeNotifierProvider<GeneralInfo>(builder: (_) => GeneralInfo()),
         ChangeNotifierProvider<FoodCategories>(builder: (_) => FoodCategories()),
+        ChangeNotifierProvider<Favorites>(builder: (_) => Favorites()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
