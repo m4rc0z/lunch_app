@@ -20,8 +20,8 @@ class Favorites with ChangeNotifier {
       _box.put(restaurantId, true);
     } else{
       _box.put(restaurantId, !favorite);
-      notifyListeners();
     }
+    notifyListeners();
   }
 
   bool getFavoriteStatus(String restaurantId) {
