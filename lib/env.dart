@@ -1,3 +1,4 @@
 final environment = {
-  'baseUrl': 'https://lunch-app-backend.herokuapp.com/unauthenticated/api'
+  'baseUrl': 'http://localhost:3005/unauthenticated/api',
+  'baseUrl2': 'https://dev.mealit.de/unauthenticated/api'
 };

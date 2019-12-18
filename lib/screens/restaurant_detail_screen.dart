@@ -1,9 +1,11 @@
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:lunch_app/providers/favorites.dart';
 import 'package:lunch_app/providers/foodCategories.dart';
 import 'package:lunch_app/providers/general_info.dart';
+import 'package:lunch_app/providers/restaurant.dart';
 import 'package:lunch_app/providers/restaurants.dart';
 import 'package:lunch_app/widgets/foodCategoryMenuFilter.dart';
 import 'package:lunch_app/widgets/restaurant_detail_header.dart';
@@ -27,7 +29,7 @@ class RestaurantDetailScreen extends StatefulWidget {
 class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with TickerProviderStateMixin {
   var _isInit = true;
   var _isLoading = false;
-  var _restaurant;
+  Restaurant _restaurant;
   var menus;
   PageController _tabController;
   var today = DateTime.now();
@@ -49,7 +51,7 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
   @override
   void initState() {
     super.initState();
-    this.weekDays = new DateUtil().getWeekDaysForDate(today);
+    this.weekDays = DateUtil.getWeekDaysForDate(today);
     this._tabList = [
       ...this.weekDays.map((weekDay) {
         return MenusList(this.restaurantId, weekDay);
@@ -62,7 +64,7 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
 
   @override
   void didChangeDependencies() {
-    this.weekDays = new DateUtil().getWeekDaysForDate(today);
+    this.weekDays = DateUtil.getWeekDaysForDate(today);
     this.today = this.weekDays.firstWhere((weekDay) {
       return weekDay.day == today.day &&
           weekDay.month == today.month &&
@@ -129,8 +131,10 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
                           child: ColorFiltered(
                             colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.darken),
                             child: Container(
-                              child: Image.asset( // TODO: remove this asset and load real image
-                                'assets/test.jpg',
+                              child: CachedNetworkImage(
+                                imageUrl: _restaurant.imageUrl,
+                                placeholder: (context, url) => CircularProgressIndicator(),
+                                errorWidget: (context, url, error) => Icon(Icons.error),
                                 fit: BoxFit.fitWidth,
                               ),
                             ),

@@ -20,8 +20,14 @@ class FoodCategories with ChangeNotifier {
     return [..._menuItems];
   }
 
-  Future<void> fetchAndSetRestaurantCategories(DateTime fromDate, DateTime toDate) async {
-    var url = environment['baseUrl'] + '/categories?fromDate='+ fromDate.toIso8601String() +'&toDate=' + toDate.toIso8601String();
+  // TODO: revert this part and do it like for non favourites (fetch of restaurants based on date
+  // TODO: do this in parent (fetch with same function) then in favourite class filter the fetched items based on favourite status)
+  // TODO: do the filter of favourites like this -> iterate over favourite restaurant ids and get these items out of the fetched items
+  //  this has a better performance then the other way around
+  Future<void> fetchAndSetRestaurantCategories(DateTime fromDate,
+      DateTime toDate) async {
+    var url = environment['baseUrl'] + '/categories?fromDate=' +
+        fromDate.toIso8601String() + '&toDate=' + toDate.toIso8601String();
     try {
       _restaurantItems = await prepareCategories(url);
       notifyListeners();
@@ -34,7 +40,8 @@ class FoodCategories with ChangeNotifier {
     final List<FoodCategory> foodCategories = [];
     menus.forEach((m) {
       m.categories.forEach((c) {
-        var exists = foodCategories.firstWhere((fc) => fc.id == c.id, orElse: () => null) != null;
+        var exists = foodCategories.firstWhere((fc) => fc.id == c.id,
+            orElse: () => null) != null;
         if (!exists) {
           foodCategories.add(FoodCategory(
             id: c.id,
@@ -46,8 +53,10 @@ class FoodCategories with ChangeNotifier {
     _menuItems = foodCategories;
   }
 
-  Future<void> fetchAndSetMenuCategories(DateTime fromDate, DateTime toDate) async {
-    var url = environment['baseUrl'] + '/categories?fromDate='+ fromDate.toIso8601String() +'&toDate=' + toDate.toIso8601String();
+  Future<void> fetchAndSetMenuCategories(DateTime fromDate,
+      DateTime toDate) async {
+    var url = environment['baseUrl'] + '/categories?fromDate=' +
+        fromDate.toIso8601String() + '&toDate=' + toDate.toIso8601String();
     try {
       _menuItems = await prepareCategories(url);
       notifyListeners();

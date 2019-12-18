@@ -8,16 +8,16 @@ import 'package:provider/provider.dart';
 import '../date_util.dart';
 import '../widgets/restaurants_list.dart';
 
-class RestaurantsListScreen extends StatefulWidget {
+class RestaurantsFavouritesListScreen extends StatefulWidget {
   final void Function(int) navigateTo;
 
-  RestaurantsListScreen(this.navigateTo);
+  RestaurantsFavouritesListScreen(this.navigateTo);
 
   @override
-  _RestaurantsListScreenState createState() => _RestaurantsListScreenState();
+  _RestaurantsFavouritesListScreenState createState() => _RestaurantsFavouritesListScreenState();
 }
 
-class _RestaurantsListScreenState extends State<RestaurantsListScreen>
+class _RestaurantsFavouritesListScreenState extends State<RestaurantsFavouritesListScreen>
     with TickerProviderStateMixin {
   var _isInit = true;
   var weekdays;
@@ -48,7 +48,6 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen>
           currentPosition = value;
         });
       });
-
       var todayDateTime = DateTime.now();
       weekdays = DateUtil.getWeekDaysForDate(todayDateTime);
     }
@@ -81,7 +80,7 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen>
                         weekdays,
                         Provider.of<GeneralInfo>(context).currentWeekdayIndex,
                         widget.navigateTo
-                      )
+                )
                     : Container(),
               ),
             ),
@@ -90,29 +89,29 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen>
         body: Container(
           color: Colors.white,
           child: !Provider.of<GeneralInfo>(context).isLoadingRestaurants
-              ? Container(
-                  // TODO: check how to set background color globally
-                  child: Column(
-                    children: <Widget>[
-                      AnimatedSize(
-                        vsync: this,
-                        duration: Duration(milliseconds: 200),
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 20.0),
-                          child: FoodCategoryRestaurantFilter(),
-                        ),
-                      ),
-                      Expanded(
-                        child: RestaurantsList(Provider.of<GeneralInfo>(context).currentWeekdayIndex, currentPosition, false),
-                      ),
-                    ],
-                  ),
-                )
-              : Container(
-                  child: Center(
-                    child: CircularProgressIndicator(),
+            ? Container(
+            // TODO: check how to set background color globally
+            child: Column(
+              children: <Widget>[
+                AnimatedSize(
+                  vsync: this,
+                  duration: Duration(milliseconds: 200),
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 20.0),
+                    child: FoodCategoryRestaurantFilter(),
                   ),
                 ),
+                Expanded(
+                  child: RestaurantsList(Provider.of<GeneralInfo>(context).currentWeekdayIndex, currentPosition, true),
+                ),
+              ],
+            ),
+          )
+              : Container(
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
         ));
   }
 }

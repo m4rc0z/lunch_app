@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 class GeneralInfo with ChangeNotifier {
   DateTime fromDate;
   DateTime toDate;
+  bool isLoadingRestaurants = true;
+  bool isLoadingCategories = true;
+  int currentWeekdayIndex = 0;
   List<DateTime> _weekDays;
   List<String> _foodCategoryFilter = [];
 
@@ -17,6 +20,21 @@ class GeneralInfo with ChangeNotifier {
 
   List<String> get menuFoodCategoryFilter {
     return [..._menuFoodCategoryFilter];
+  }
+
+  setWeekDayIndex(int value) {
+    this.currentWeekdayIndex = value;
+    notifyListeners();
+  }
+
+  setLoadingRestaurants(bool value) {
+    this.isLoadingRestaurants = value;
+    notifyListeners();
+  }
+
+  setLoadingCategories(bool value) {
+    this.isLoadingCategories = value;
+    notifyListeners();
   }
 
   initMenuFoodCategoryBasedOnRestaurantFoodCategory() {

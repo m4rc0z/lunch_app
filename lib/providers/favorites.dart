@@ -7,11 +7,15 @@ import 'package:path_provider/path_provider.dart';
 class Favorites with ChangeNotifier {
   Box<dynamic> _box;
 
-  initDB() async {
+  Future<void> initDB() async {
     Directory appDir = await getApplicationDocumentsDirectory();
     String path = appDir.path;
     Hive.init(path);
-    _box = await Hive.openBox('favoriteBox');
+    var future = Hive.openBox('favoriteBox');
+    future.then((Box value) {
+        _box = value;
+    });
+    return future;
   }
 
   toggleFavorite(String restaurantId) {
@@ -28,4 +32,5 @@ class Favorites with ChangeNotifier {
     var fav = _box.get(restaurantId);
     return fav != null ? fav : false;
   }
+
 }

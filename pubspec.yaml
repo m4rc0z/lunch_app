@@ -25,6 +25,8 @@ dependencies:
   hive: 1.1.0
   hive_flutter: 0.2.1
   path_provider: 1.3.1
+  geolocator: 5.1.4
+  cached_network_image: 1.1.3
 
 dev_dependencies:
   flutter_test:

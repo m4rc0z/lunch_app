@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:lunch_app/providers/favorites.dart';
 import 'package:lunch_app/providers/foodCategories.dart';
 import 'package:lunch_app/providers/general_info.dart';
+import 'package:lunch_app/screens/restaurant_list_parent_screen.dart';
 import 'package:provider/provider.dart';
 
 import './providers/menus.dart';
 import 'providers/restaurants.dart';
-import 'screens/restaurant_list_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -16,11 +16,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<Restaurants>(builder: (_) => Restaurants()),
+        ChangeNotifierProvider<Favorites>(builder: (_) => Favorites()),
+        ChangeNotifierProxyProvider<Favorites, Restaurants>(
+            initialBuilder: (BuildContext context) => Restaurants(null),
+            builder: (_, favourites, restaurants) {
+              restaurants.setProvider(favourites);
+              return restaurants;
+            }),
         ChangeNotifierProvider<Menus>(builder: (_) => Menus()),
         ChangeNotifierProvider<GeneralInfo>(builder: (_) => GeneralInfo()),
         ChangeNotifierProvider<FoodCategories>(builder: (_) => FoodCategories()),
-        ChangeNotifierProvider<Favorites>(builder: (_) => Favorites()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -36,7 +41,7 @@ class MyApp extends StatelessWidget {
           // is not restarted.
           primarySwatch: Colors.blue,
         ),
-        home: RestaurantsListScreen(),
+        home: RestaurantListParentScreen(), // TODO: add parent to handle tab handling and call restaurantlistscreen inside this
       ),
     );
     ;

@@ -1,0 +1,182 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:lunch_app/providers/favorites.dart';
+import 'package:lunch_app/providers/foodCategories.dart';
+import 'package:lunch_app/providers/general_info.dart';
+import 'package:lunch_app/providers/restaurants.dart';
+import 'package:lunch_app/screens/restaurant_favourites_list_screen.dart';
+import 'package:lunch_app/screens/restaurant_list_screen.dart';
+import 'package:provider/provider.dart';
+
+import '../date_util.dart';
+
+class RestaurantListParentScreen extends StatefulWidget {
+  @override
+  _RestaurantListParentScreenState createState() =>
+      _RestaurantListParentScreenState();
+}
+
+class _RestaurantListParentScreenState
+    extends State<RestaurantListParentScreen> {
+  PageController _tabController;
+  List<Widget> _tabList;
+  var _isInit = true;
+  var currentIndex = 0;
+  var weekdays;
+  StreamSubscription<Position> positionStream;
+
+  @override
+  void dispose() {
+    this._tabController.dispose();
+    this.positionStream.cancel();
+    super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      this._tabList = [
+        new RestaurantsListScreen(this.navigateTo),
+        new RestaurantsFavouritesListScreen(this.navigateTo)
+      ];
+      var todayDateTime = DateTime.now();
+      weekdays = DateUtil.getWeekDaysForDate(todayDateTime);
+      var today = weekdays.firstWhere((weekDay) {
+        return weekDay.day == todayDateTime.day &&
+            weekDay.month == todayDateTime.month &&
+            weekDay.year == todayDateTime.year;
+      });
+
+      // TODO: check why this delayed is needed -> otherwise a exception happens
+      Future.delayed(Duration.zero, () {
+        Provider.of<GeneralInfo>(context).setLoadingRestaurants(true);
+        Provider.of<GeneralInfo>(context).setLoadingCategories(true);
+        if (weekdays.length > 0) {
+          var fromDate = weekdays[0];
+          var toDate = weekdays[6];
+          Provider.of<GeneralInfo>(context)
+              .setDateRangeAndWeekDays(fromDate, toDate, weekdays);
+          Provider.of<Favorites>(context).initDB().then((_) {
+            Provider.of<Restaurants>(context)
+                .fetchAndSetRestaurants(
+              Provider.of<GeneralInfo>(context).foodCategoryFilter,
+              fromDate,
+              toDate,
+            )
+                .then((_) {
+              Provider.of<GeneralInfo>(context).setLoadingRestaurants(false);
+            });
+          });
+
+          Provider.of<FoodCategories>(context)
+              .fetchAndSetRestaurantCategories(
+            weekdays[weekdays.indexOf(today)],
+            weekdays[weekdays.indexOf(today)],
+          )
+              .then((_) {
+            Provider.of<GeneralInfo>(context).setLoadingCategories(false);
+          });
+        }
+      });
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
+
+  void navigateTo(selectedIndex) {
+    // TODO: use function
+    Provider.of<GeneralInfo>(context).setWeekDayIndex(selectedIndex);
+    Provider.of<GeneralInfo>(context).setLoadingRestaurants(true);
+    Provider.of<GeneralInfo>(context).setLoadingCategories(true);
+
+    Provider.of<GeneralInfo>(context).resetRestaurantFoodCategoryFilter();
+
+    Provider.of<FoodCategories>(context)
+        .fetchAndSetRestaurantCategories(
+      weekdays[selectedIndex],
+      weekdays[selectedIndex],
+    )
+        .then((_) {
+      Provider.of<GeneralInfo>(context).setLoadingCategories(false);
+    });
+
+    Provider.of<Restaurants>(context)
+        .fetchAndSetRestaurants(
+      Provider.of<GeneralInfo>(context).foodCategoryFilter,
+      weekdays[selectedIndex],
+      weekdays[selectedIndex],
+    )
+        .then((_) {
+      Provider.of<GeneralInfo>(context).setLoadingRestaurants(false);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    var geoLocator = new Geolocator();
+    var locationOptions =
+        LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 10);
+    geoLocator.checkGeolocationPermissionStatus().then((status) {
+      if (status != GeolocationStatus.denied &&
+          status != GeolocationStatus.disabled) {
+        this.positionStream = geoLocator
+            .getPositionStream(locationOptions)
+            .listen((Position position) {
+          if (position != null) {
+            Provider.of<Restaurants>(context).setCurrentLocation(position);
+          }
+        });
+        // TODO: check where to close the stream
+      }
+    });
+    this._tabList = [
+      new RestaurantsListScreen(this.navigateTo),
+      new RestaurantsFavouritesListScreen(this.navigateTo)
+    ];
+    this._tabController = new PageController(
+      initialPage: currentIndex,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: currentIndex,
+        onTap: (newPage) {
+          setState(() {
+            currentIndex = newPage;
+          });
+          this._tabController.animateToPage(newPage,
+              duration: Duration(milliseconds: 300), curve: Curves.easeOut);
+        },
+        items: [
+          BottomNavigationBarItem(
+              icon: new Icon(
+                Icons.home,
+                color: Color.fromRGBO(27, 154, 170, 1),
+              ),
+              title: Text('Home', style: TextStyle(color: Colors.black))),
+          BottomNavigationBarItem(
+              icon: new Icon(
+                Icons.favorite,
+                color: Color.fromRGBO(27, 154, 170, 1),
+              ),
+              title: Text('Favourites', style: TextStyle(color: Colors.black)))
+        ],
+      ),
+      body: PageView(
+        controller: _tabController,
+        onPageChanged: (newPage) {
+          setState(() {
+            currentIndex = newPage;
+          });
+        },
+        children: _tabList,
+      ),
+    );
+  }
+}

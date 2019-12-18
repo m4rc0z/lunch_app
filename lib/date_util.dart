@@ -1,5 +1,5 @@
 class DateUtil {
-  List<DateTime> getWeekDaysForDate(DateTime curr) {
+  static List<DateTime> getWeekDaysForDate(DateTime curr) {
     List<DateTime> week = [];
 
     for (var i = 1; i <= 7; i++) {

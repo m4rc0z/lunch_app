@@ -19,7 +19,7 @@ class _DaySelectionState extends State<DaySelection> {
   }
 
   void didChangeDependencies() {
-    this.weekDays = new DateUtil().getWeekDaysForDate(today);
+    this.weekDays = DateUtil.getWeekDaysForDate(today);
     this.today = this.weekDays.firstWhere((weekDay) {
       return weekDay.day == today.day && weekDay.month == today.month && weekDay.year == today.year;
     });
