@@ -126,21 +126,27 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
                       child: Hero(
                         transitionOnUserGestures: true,
                         tag: 'restaurantHero' + this.restaurantId,
-                        child: Material(
-                          type: MaterialType.transparency,
-                          child: ColorFiltered(
-                            colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.darken),
-                            child: Container(
-                              child: CachedNetworkImage(
-                                imageUrl: _restaurant.imageUrl,
-                                placeholder: (context, url) => CircularProgressIndicator(),
-                                errorWidget: (context, url, error) => Icon(Icons.error),
-                                fit: BoxFit.fitWidth,
-                              ),
-                            ),
-                          ),
-                          ),
-                        ),
+                        child: _restaurant.imageUrl != null
+                            ?  Material(
+                                type: MaterialType.transparency,
+                                child: ColorFiltered(
+                                  colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.darken),
+                                  child: Container(
+                                    child: CachedNetworkImage(
+                                      imageUrl: _restaurant.imageUrl,
+                                      placeholder: (context, url) => Container(
+                                          color: Colors.transparent,
+                                          child: FittedBox(fit: BoxFit.scaleDown, child: CircularProgressIndicator())
+                                      ),
+                                      errorWidget: (context, url, error) => Container(color: Color.fromRGBO(189, 187, 173, 1)),
+                                      fit: BoxFit.fitWidth,
+                                    )
+                                  ),
+                                )
+                              )
+                            : Container(height: 350, color: Color.fromRGBO(189, 187, 173, 1))
+
+                      ),
                     ),
                     Positioned(
                       top: 175,

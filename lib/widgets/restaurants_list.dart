@@ -50,18 +50,23 @@ class RestaurantsList extends StatelessWidget {
                                   context, restaurants[i].id),
                               child: ClipRRect(
                                 borderRadius: new BorderRadius.circular(20.0),
-                                child: ColorFiltered(
-                                  colorFilter: ColorFilter.mode(
-                                      Colors.black.withOpacity(0.4),
-                                      BlendMode.darken),
-                                  child: CachedNetworkImage(
-                                    imageUrl: restaurants[i].imageUrl,
-                                    placeholder: (context, url) => CircularProgressIndicator(),
-                                    errorWidget: (context, url, error) => Icon(Icons.error),
-                                    fit: BoxFit.fitWidth,
-                                  ),
-                                ),
-                              ),
+                                child: restaurants[i].imageUrl != null
+                                    ? ColorFiltered(
+                                        colorFilter: ColorFilter.mode(
+                                            Colors.black.withOpacity(0.4),
+                                            BlendMode.darken),
+                                        child: CachedNetworkImage(
+                                          imageUrl: restaurants[i].imageUrl,
+                                          placeholder: (context, url) => Container(
+                                            color: Colors.transparent,
+                                            child: FittedBox(fit: BoxFit.scaleDown, child: CircularProgressIndicator())
+                                          ),
+                                          errorWidget: (context, url, error) => Container(color: Color.fromRGBO(189, 187, 173, 1)),
+                                          fit: BoxFit.fitWidth,
+                                        )
+                                      )
+                                    : Container(color: Color.fromRGBO(189, 187, 173, 1))
+                          ),
                             ),
                           ),
                         ),
@@ -103,6 +108,7 @@ class RestaurantsList extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
                           child: Material(
                             color: Colors.transparent,
+                            shadowColor: Colors.transparent,
                             elevation: 4.0,
                             shape: CircleBorder(),
                             clipBehavior: Clip.hardEdge,
