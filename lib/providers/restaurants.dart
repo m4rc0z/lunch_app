@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
+import 'package:lunch_app/models/http_exception.dart';
 
 import '../env.dart';
+import '../error_logger.dart';
 import '../providers/restaurant.dart';
 import 'address.dart';
 import 'favorites.dart';
@@ -127,47 +130,65 @@ class Restaurants with ChangeNotifier {
         getCurrentLocation(),
         http.get(url),
       ]).then((List<dynamic> values) async {
-        this.currLocation = values[0];
-        response = values[1];
+        try {
+          this.currLocation = values[0];
+          response = values[1];
+          if (response.statusCode >= 400) {
+            throw HttpException('Wrong Http Status answer ' + response.statusCode.toString());
+          }
 
-        final extractedData = json.decode(response.body) as List<dynamic>;
-        final List<Restaurant> loadedRestaurant = [];
-        await Future.wait(extractedData.map((restaurantData) async {
-          final List<Menu> loadedMenus = [];
-          restaurantData['menus'].forEach((menu) {
-            loadedMenus.add(Menu(id: menu['_id'], date: DateTime.parse(menu['date'])));
-          });
-          loadedRestaurant.add(Restaurant(
-            id: restaurantData['RID'],
-            name: restaurantData['name'],
-            menus: loadedMenus,
-            address: Address(
-              addressLine: restaurantData['address'],
-              postalCode: restaurantData['postalCode'],
-              city: restaurantData['city'],
-            ),
-            imageUrl: restaurantData['imageUrl'],
-            distance: this.currLocation != null
-                ? await getDistance(
-                geoLocator, this.currLocation, restaurantData['latitude'], restaurantData['longitude'])
-                : null
-          ));
-        }));
+          final extractedData = json.decode(response.body) as List<dynamic>;
+          final List<Restaurant> loadedRestaurant = [];
+          await Future.wait(extractedData.map((restaurantData) async {
+            final List<Menu> loadedMenus = [];
+            restaurantData['menus'].forEach((menu) {
+              loadedMenus.add(Menu(id: menu['_id'], date: DateTime.parse(menu['date'])));
+            });
+            loadedRestaurant.add(Restaurant(
+                id: restaurantData['RID'],
+                name: restaurantData['name'],
+                menus: loadedMenus,
+                address: Address(
+                  addressLine: restaurantData['address'],
+                  postalCode: restaurantData['postalCode'],
+                  city: restaurantData['city'],
+                ),
+                imageUrl: restaurantData['imageUrl'],
+                distance: this.currLocation != null
+                    ? await getDistance(
+                    geoLocator, this.currLocation, restaurantData['latitude'], restaurantData['longitude'])
+                    : null
+            ));
+          }));
 
-        // TODO: do only fetch restaurants in parent restaurant screen and filter only for screens based on favorite status
-        _items = loadedRestaurant;
-        if (this.currLocation != null) {
-          sortRestaurantsByPosition();
+          // TODO: do only fetch restaurants in parent restaurant screen and filter only for screens based on favorite status
+          _items = loadedRestaurant;
+          if (this.currLocation != null) {
+            sortRestaurantsByPosition();
+          }
+          _isFetching = false;
+          c.complete(null);
+          notifyListeners();
+        } catch (error) {
+          _isFetching = false;
+          c.completeError(error);
+          notifyListeners();
+          if (error is! SocketException) {
+            ErrorLogger.logError(error);
+          }
         }
-        _isFetching = false;
-        c.complete(null);
-        notifyListeners();
+      })
+      .catchError((error) {
+        c.completeError(error);
       });
       return c.future;
     } catch (error) {
       _isFetching = false;
+      c.completeError(error);
       notifyListeners();
-      throw (error);
+      if (error is! SocketException) {
+        ErrorLogger.logError(error);
+      }
     }
   }
 

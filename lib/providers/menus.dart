@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:lunch_app/providers/restaurantMenu.dart';
 
 import '../env.dart';
+import '../error_logger.dart';
 import 'course.dart';
 import 'foodCategory.dart';
 import 'menu.dart';
@@ -84,6 +85,7 @@ class Menus with ChangeNotifier {
           RestaurantMenu(id: restaurantId, menu: menu)).toList();
       notifyListeners();
     } catch (error) {
+      ErrorLogger.logError(error);
       throw (error);
     }
   }

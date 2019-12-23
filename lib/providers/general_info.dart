@@ -16,6 +16,7 @@ class GeneralInfo with ChangeNotifier {
   List<String> get foodCategoryFilter {
     return [..._foodCategoryFilter];
   }
+
   List<String> _menuFoodCategoryFilter = [];
 
   List<String> get menuFoodCategoryFilter {

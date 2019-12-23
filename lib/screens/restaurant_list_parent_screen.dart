@@ -27,6 +27,8 @@ class _RestaurantListParentScreenState
   var weekdays;
   StreamSubscription<Position> positionStream;
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   @override
   void dispose() {
     this._tabController.dispose();
@@ -58,25 +60,30 @@ class _RestaurantListParentScreenState
           var toDate = weekdays[6];
           Provider.of<GeneralInfo>(context)
               .setDateRangeAndWeekDays(fromDate, toDate, weekdays);
-          Provider.of<Favorites>(context).initDB().then((_) {
-            Provider.of<Restaurants>(context)
-                .fetchAndSetRestaurants(
-              Provider.of<GeneralInfo>(context).foodCategoryFilter,
-              fromDate,
-              toDate,
-            )
-                .then((_) {
+          Provider.of<Favorites>(context).initDB().then((_) async {
+            try {
+              await Provider.of<Restaurants>(context)
+                  .fetchAndSetRestaurants(
+                Provider.of<GeneralInfo>(context).foodCategoryFilter,
+                fromDate,
+                toDate,
+              );
+            } catch (error) {
+              _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Verbindungsprobleme')));
+            } finally {
               Provider.of<GeneralInfo>(context).setLoadingRestaurants(false);
-            });
-          });
-
-          Provider.of<FoodCategories>(context)
-              .fetchAndSetRestaurantCategories(
-            weekdays[weekdays.indexOf(today)],
-            weekdays[weekdays.indexOf(today)],
-          )
-              .then((_) {
-            Provider.of<GeneralInfo>(context).setLoadingCategories(false);
+            }
+            try {
+              await Provider.of<FoodCategories>(context)
+                  .fetchAndSetRestaurantCategories(
+                weekdays[weekdays.indexOf(today)],
+                weekdays[weekdays.indexOf(today)],
+              );
+            } catch (error) {
+              _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Verbindungsprobleme')));
+            } finally {
+              Provider.of<GeneralInfo>(context).setLoadingCategories(false); // TODO: remove unused LoadingCategories
+            }
           });
         }
       });
@@ -85,7 +92,7 @@ class _RestaurantListParentScreenState
     super.didChangeDependencies();
   }
 
-  void navigateTo(selectedIndex) {
+  void navigateTo(selectedIndex) async {
     // TODO: use function
     Provider.of<GeneralInfo>(context).setWeekDayIndex(selectedIndex);
     Provider.of<GeneralInfo>(context).setLoadingRestaurants(true);
@@ -93,24 +100,30 @@ class _RestaurantListParentScreenState
 
     Provider.of<GeneralInfo>(context).resetRestaurantFoodCategoryFilter();
 
-    Provider.of<FoodCategories>(context)
+    try {
+      await Provider.of<FoodCategories>(context)
         .fetchAndSetRestaurantCategories(
-      weekdays[selectedIndex],
-      weekdays[selectedIndex],
-    )
-        .then((_) {
+          weekdays[selectedIndex],
+          weekdays[selectedIndex],
+        );
+    } catch (error) {
+      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Verbindungsprobleme')));
+    } finally {
       Provider.of<GeneralInfo>(context).setLoadingCategories(false);
-    });
+    }
 
-    Provider.of<Restaurants>(context)
-        .fetchAndSetRestaurants(
-      Provider.of<GeneralInfo>(context).foodCategoryFilter,
-      weekdays[selectedIndex],
-      weekdays[selectedIndex],
-    )
-        .then((_) {
+    try {
+      await Provider.of<Restaurants>(context)
+          .fetchAndSetRestaurants(
+        Provider.of<GeneralInfo>(context).foodCategoryFilter,
+        weekdays[selectedIndex],
+        weekdays[selectedIndex],
+      );
+    } catch (error) {
+      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Verbindungsprobleme')));
+    } finally {
       Provider.of<GeneralInfo>(context).setLoadingRestaurants(false);
-    });
+    }
   }
 
   @override
@@ -144,6 +157,7 @@ class _RestaurantListParentScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
         onTap: (newPage) {

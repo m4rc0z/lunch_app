@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lunch_app/providers/favorites.dart';
@@ -7,13 +9,27 @@ import 'package:lunch_app/screens/restaurant_list_parent_screen.dart';
 import 'package:provider/provider.dart';
 
 import './providers/menus.dart';
+import 'error_logger.dart';
 import 'providers/restaurants.dart';
 
-void main() {
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-      .then((_) {
-    runApp(MyApp());
+Future<Null> main() async {
+  FlutterError.onError = (FlutterErrorDetails details) async {
+    Zone.current.handleUncaughtError(details.exception, details.stack);
+  };
+
+  runZoned<Future<Null>>(() async {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+        .then((_) {
+      runApp(MyApp());
+    });
+  }, onError: (error, stackTrace) async {
+    await _reportError(error, stackTrace);
   });
+}
+
+Future<Null> _reportError(dynamic error, dynamic stackTrace) async {
+  print('Caught error: $error');
+  ErrorLogger.logError(error, stackTrace);
 }
 
 class MyApp extends StatelessWidget {
@@ -31,7 +47,8 @@ class MyApp extends StatelessWidget {
             }),
         ChangeNotifierProvider<Menus>(builder: (_) => Menus()),
         ChangeNotifierProvider<GeneralInfo>(builder: (_) => GeneralInfo()),
-        ChangeNotifierProvider<FoodCategories>(builder: (_) => FoodCategories()),
+        ChangeNotifierProvider<FoodCategories>(
+            builder: (_) => FoodCategories()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -47,7 +64,8 @@ class MyApp extends StatelessWidget {
           // is not restarted.
           primarySwatch: Colors.blue,
         ),
-        home: RestaurantListParentScreen(), // TODO: add parent to handle tab handling and call restaurantlistscreen inside this
+        home:
+            RestaurantListParentScreen(), // TODO: add parent to handle tab handling and call restaurantlistscreen inside this
       ),
     );
     ;
