@@ -1,4 +1,4 @@
-package com.example.lunch_app;
+package com.mealit.app;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
