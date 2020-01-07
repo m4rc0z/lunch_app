@@ -109,9 +109,10 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
 
   @override
   Widget build(BuildContext context) {
+    final favorite = Provider.of<Favorites>(context).getFavoriteStatus(restaurantId);
     return Scaffold(
       body: Container(
-        color: Colors.white,
+        color: Color.fromRGBO(242, 241, 240, 1),
         child: Column(
             children: <Widget>[
               Container(
@@ -181,7 +182,7 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
                             padding: const EdgeInsets.symmetric(horizontal: 8.0),
                             child: new IconButton(
                               icon: new Icon(
-                                Provider.of<Favorites>(context).getFavoriteStatus(restaurantId) ?
+                                favorite ?
                                   Icons.favorite
                                 : Icons.favorite_border,
                                 color: Colors.white,

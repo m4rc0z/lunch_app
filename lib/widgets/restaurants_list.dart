@@ -21,7 +21,6 @@ class RestaurantsList extends StatelessWidget {
     final restaurantsData = Provider.of<Restaurants>(context);
     final restaurants = this.onlyFavourites ? restaurantsData.favouriteItems : restaurantsData.items;
     return Container(
-      color: Colors.white,
       child: restaurants.length > 0
           ? ListView.builder(
         padding: const EdgeInsets.all(10.0),
@@ -136,7 +135,9 @@ class RestaurantsList extends StatelessWidget {
           ]),
         ),
       )
-      : Container(child: Text('Es bieten keine Restaurants Menüs an dem ausgewählten Tag an.'))
+      : Container(child: Text(this.onlyFavourites
+          ? 'Es bieten keine deiner Favoriten Restaurants Menüs an dem ausgewählten Tag an.'
+          : 'Es bieten keine Restaurants Menüs an dem ausgewählten Tag an.'))
     );
   }
 

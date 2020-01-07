@@ -18,7 +18,7 @@ class RestaurantDetailHeader extends StatelessWidget {
         children: <Widget>[
           Container(
             decoration: BoxDecoration(
-                color: Colors.white,
+                color: Color.fromRGBO(242, 241, 240, 1),
                 borderRadius: BorderRadius.only(
                     topRight: Radius.circular(20),
                     topLeft: Radius.circular(20))),

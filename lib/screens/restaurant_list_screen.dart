@@ -29,11 +29,11 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen>
     super.initState();
   }
 
-  Future<Position> _getLocation() async {
-    var currentLocation;
+  Future<Position> _getLocation() {
+    Future<Position> currentLocation;
     try {
-      currentLocation = await geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.best);
+      currentLocation =
+          geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
     } catch (e) {
       currentLocation = null;
     }
@@ -43,10 +43,8 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen>
   @override
   void didChangeDependencies() {
     if (_isInit) {
-      _getLocation().then((value) async {
-        setState(() {
-          currentPosition = value;
-        });
+      _getLocation().then((value) {
+        currentPosition = value;
       });
 
       var todayDateTime = DateTime.now();
@@ -61,12 +59,11 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen>
     return Scaffold(
         appBar: AppBar(
           elevation: 0.0,
-          backgroundColor: Colors.white,
+          backgroundColor: Color.fromRGBO(242, 241, 240, 1),
           title: Center(
             child: Container(
-              child: Text(
-                'LUNCH MENU',
-                style: TextStyle(color: Colors.black),
+              child: Image(
+                image: AssetImage('assets/mealit_logo.png'),
               ),
             ),
           ),
@@ -80,15 +77,14 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen>
                     ? WeekDayNavigationBar(
                         weekdays,
                         Provider.of<GeneralInfo>(context).currentWeekdayIndex,
-                        widget.navigateTo
-                      )
+                        widget.navigateTo)
                     : Container(),
               ),
             ),
           ),
         ),
         body: Container(
-          color: Colors.white,
+          color: Color.fromRGBO(242, 241, 240, 1),
           child: !Provider.of<GeneralInfo>(context).isLoadingRestaurants
               ? Container(
                   // TODO: check how to set background color globally
@@ -103,7 +99,11 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen>
                         ),
                       ),
                       Expanded(
-                        child: RestaurantsList(Provider.of<GeneralInfo>(context).currentWeekdayIndex, currentPosition, false),
+                        child: RestaurantsList(
+                            Provider.of<GeneralInfo>(context)
+                                .currentWeekdayIndex,
+                            currentPosition,
+                            false),
                       ),
                     ],
                   ),

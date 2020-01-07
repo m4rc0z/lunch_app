@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:lunch_app/providers/favorites.dart';
 import 'package:lunch_app/providers/foodCategories.dart';
 import 'package:lunch_app/providers/general_info.dart';
 import 'package:lunch_app/providers/restaurants.dart';
@@ -24,7 +23,7 @@ class _RestaurantListParentScreenState
   List<Widget> _tabList;
   var _isInit = true;
   var currentIndex = 0;
-  var weekdays;
+  List<DateTime> weekdays;
   StreamSubscription<Position> positionStream;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -50,9 +49,15 @@ class _RestaurantListParentScreenState
             weekDay.month == todayDateTime.month &&
             weekDay.year == todayDateTime.year;
       });
+      var todayIndex = weekdays.indexWhere((weekDay) {
+        return weekDay.day == todayDateTime.day &&
+            weekDay.month == todayDateTime.month &&
+            weekDay.year == todayDateTime.year;
+      });
+      Provider.of<GeneralInfo>(context).setWeekDayIndex(todayIndex);
 
       // TODO: check why this delayed is needed -> otherwise a exception happens
-      Future.delayed(Duration.zero, () {
+      Future.delayed(Duration.zero, () async {
         Provider.of<GeneralInfo>(context).setLoadingRestaurants(true);
         Provider.of<GeneralInfo>(context).setLoadingCategories(true);
         if (weekdays.length > 0) {
@@ -60,31 +65,31 @@ class _RestaurantListParentScreenState
           var toDate = weekdays[6];
           Provider.of<GeneralInfo>(context)
               .setDateRangeAndWeekDays(fromDate, toDate, weekdays);
-          Provider.of<Favorites>(context).initDB().then((_) async {
-            try {
-              await Provider.of<Restaurants>(context)
-                  .fetchAndSetRestaurants(
-                Provider.of<GeneralInfo>(context).foodCategoryFilter,
-                fromDate,
-                toDate,
-              );
-            } catch (error) {
-              _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Verbindungsprobleme')));
-            } finally {
-              Provider.of<GeneralInfo>(context).setLoadingRestaurants(false);
-            }
-            try {
-              await Provider.of<FoodCategories>(context)
-                  .fetchAndSetRestaurantCategories(
-                weekdays[weekdays.indexOf(today)],
-                weekdays[weekdays.indexOf(today)],
-              );
-            } catch (error) {
-              _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Verbindungsprobleme')));
-            } finally {
-              Provider.of<GeneralInfo>(context).setLoadingCategories(false); // TODO: remove unused LoadingCategories
-            }
-          });
+          try {
+            await Provider.of<Restaurants>(context).fetchAndSetRestaurants(
+              Provider.of<GeneralInfo>(context).foodCategoryFilter,
+              fromDate,
+              toDate,
+            );
+          } catch (error) {
+            _scaffoldKey.currentState
+                .showSnackBar(SnackBar(content: Text('Verbindungsprobleme')));
+          } finally {
+            Provider.of<GeneralInfo>(context).setLoadingRestaurants(false);
+          }
+          try {
+            await Provider.of<FoodCategories>(context)
+                .fetchAndSetRestaurantCategories(
+              weekdays[weekdays.indexOf(today)],
+              weekdays[weekdays.indexOf(today)],
+            );
+          } catch (error) {
+            _scaffoldKey.currentState
+                .showSnackBar(SnackBar(content: Text('Verbindungsprobleme')));
+          } finally {
+            Provider.of<GeneralInfo>(context).setLoadingCategories(
+                false); // TODO: remove unused LoadingCategories
+          }
         }
       });
     }
@@ -102,25 +107,26 @@ class _RestaurantListParentScreenState
 
     try {
       await Provider.of<FoodCategories>(context)
-        .fetchAndSetRestaurantCategories(
-          weekdays[selectedIndex],
-          weekdays[selectedIndex],
-        );
+          .fetchAndSetRestaurantCategories(
+        weekdays[selectedIndex],
+        weekdays[selectedIndex],
+      );
     } catch (error) {
-      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Verbindungsprobleme')));
+      _scaffoldKey.currentState
+          .showSnackBar(SnackBar(content: Text('Verbindungsprobleme')));
     } finally {
       Provider.of<GeneralInfo>(context).setLoadingCategories(false);
     }
 
     try {
-      await Provider.of<Restaurants>(context)
-          .fetchAndSetRestaurants(
+      await Provider.of<Restaurants>(context).fetchAndSetRestaurants(
         Provider.of<GeneralInfo>(context).foodCategoryFilter,
         weekdays[selectedIndex],
         weekdays[selectedIndex],
       );
     } catch (error) {
-      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Verbindungsprobleme')));
+      _scaffoldKey.currentState
+          .showSnackBar(SnackBar(content: Text('Verbindungsprobleme')));
     } finally {
       Provider.of<GeneralInfo>(context).setLoadingRestaurants(false);
     }
@@ -167,19 +173,31 @@ class _RestaurantListParentScreenState
           this._tabController.animateToPage(newPage,
               duration: Duration(milliseconds: 300), curve: Curves.easeOut);
         },
+        selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
+        selectedItemColor: Color.fromRGBO(94, 135, 142, 1),
+        unselectedItemColor: Color.fromRGBO(189, 187, 173, 1),
         items: [
           BottomNavigationBarItem(
               icon: new Icon(
                 Icons.home,
-                color: Color.fromRGBO(27, 154, 170, 1),
+                color: Color.fromRGBO(189, 187, 173, 1),
               ),
-              title: Text('Home', style: TextStyle(color: Colors.black))),
+              activeIcon: new Icon(
+                Icons.home,
+                color: Color.fromRGBO(94, 135, 142, 1),
+              ),
+              title: Text('Home')),
           BottomNavigationBarItem(
-              icon: new Icon(
-                Icons.favorite,
-                color: Color.fromRGBO(27, 154, 170, 1),
-              ),
-              title: Text('Favourites', style: TextStyle(color: Colors.black)))
+            icon: new Icon(
+              Icons.favorite,
+              color: Color.fromRGBO(189, 187, 173, 1),
+            ),
+            activeIcon: new Icon(
+              Icons.favorite,
+              color: Color.fromRGBO(94, 135, 142, 1),
+            ),
+            title: Text('Favourites'),
+          )
         ],
       ),
       body: PageView(

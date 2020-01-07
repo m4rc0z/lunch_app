@@ -60,12 +60,11 @@ class _RestaurantsFavouritesListScreenState extends State<RestaurantsFavouritesL
     return Scaffold(
         appBar: AppBar(
           elevation: 0.0,
-          backgroundColor: Colors.white,
+          backgroundColor: Color.fromRGBO(242, 241, 240, 1),
           title: Center(
             child: Container(
-              child: Text(
-                'LUNCH MENU',
-                style: TextStyle(color: Colors.black),
+              child: Image(
+                image: AssetImage('assets/mealit_logo.png'),
               ),
             ),
           ),
@@ -87,7 +86,7 @@ class _RestaurantsFavouritesListScreenState extends State<RestaurantsFavouritesL
           ),
         ),
         body: Container(
-          color: Colors.white,
+          color: Color.fromRGBO(242, 241, 240, 1),
           child: !Provider.of<GeneralInfo>(context).isLoadingRestaurants
             ? Container(
             // TODO: check how to set background color globally

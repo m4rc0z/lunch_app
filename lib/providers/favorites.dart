@@ -5,6 +5,11 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 
 class Favorites with ChangeNotifier {
+
+  Favorites() {
+    this.initDB();
+  }
+
   Box<dynamic> _box;
 
   Future<void> initDB() async {

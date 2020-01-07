@@ -12,7 +12,7 @@ class WeekDayNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Theme(
       data: Theme.of(context).copyWith(
-        canvasColor: Colors.white,
+        canvasColor: Color.fromRGBO(242, 241, 240, 1),
       ),
       child: Container(
         child: BottomNavigationBar(
@@ -39,10 +39,6 @@ class WeekDayNavigationBar extends StatelessWidget {
                     ),
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
-                      decoration: BoxDecoration(
-                        color: Color.fromRGBO(245, 241, 227, 1),
-                        shape: BoxShape.circle,
-                      ),
                       width: 40,
                       height: 40,
                       child: Center(
@@ -63,7 +59,7 @@ class WeekDayNavigationBar extends StatelessWidget {
                         DateFormat('EEEE').format(weekDay).substring(0, 2),
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                            color: Color.fromRGBO(61, 40, 15, 1),
                             fontSize: 15),
                         textAlign: TextAlign.center,
                       ),
@@ -72,7 +68,7 @@ class WeekDayNavigationBar extends StatelessWidget {
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
                     decoration: BoxDecoration(
-                      color: Color.fromRGBO(27, 154, 170, 1),
+                      color: Color.fromRGBO(94, 135, 142, 1),
                       shape: BoxShape.circle,
                     ),
                     width: 50,

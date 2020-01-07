@@ -16,7 +16,7 @@ class MenusList extends StatelessWidget {
     final menusData = Provider.of<Menus>(context).getMenuByDateAndCategory(this.restaurantId, this.menuFilterDate, Provider.of<GeneralInfo>(context).menuFoodCategoryFilter);
     final menus = menusData;
     return Container(
-      color: Colors.white,
+      color: Color.fromRGBO(242, 241, 240, 1),
       child: menus.length > 0
           ? ListView.builder(
         padding: const EdgeInsets.all(10.0),
@@ -30,7 +30,7 @@ class MenusList extends StatelessWidget {
               ),
               child: Card(
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
-                  color: Color.fromRGBO(27, 154, 170, 0.6),
+                  color: Color.fromRGBO(51, 50, 47, 1),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -72,12 +72,12 @@ class MenusList extends StatelessWidget {
                               Container(
                                 child: menus[i].categories.length > 0 ?
                                 Chip(
-                                  backgroundColor: Colors.white,
+                                  backgroundColor: Color.fromRGBO(94, 135, 142, 1),
                                   label: Text(menus[i].categories != null && menus[i].categories.length > 0
                                       ? menus[i].categories[0].description
                                       : ' ',
                                     style: TextStyle(
-                                      color: Color.fromRGBO(27, 154, 170, 1),
+                                      color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -86,12 +86,12 @@ class MenusList extends StatelessWidget {
                               Container(
                                 child: menus[i].categories.length > 1 ?
                                 Chip(
-                                  backgroundColor: Colors.white,
+                                  backgroundColor: Color.fromRGBO(94, 135, 142, 1),
                                   label: Text(menus[i].categories != null && menus[i].categories.length > 1
                                       ? menus[i].categories[1].description
                                       : ' ',
                                     style: TextStyle(
-                                      color: Color.fromRGBO(27, 154, 170, 1),
+                                      color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),

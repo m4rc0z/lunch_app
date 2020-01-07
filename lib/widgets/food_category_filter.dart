@@ -33,21 +33,29 @@ class FoodCategoryFilter extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 3.0),
                   child: Container(
                     height: 30,
-                    child: MaterialButton(
-                      shape: new RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(30.0),
-                      ),
-                      color: this.foodCategoryFilter.contains(fc.id)
-                          ? Color.fromRGBO(27, 154, 170, 1)
-                          : Color.fromRGBO(245, 241, 227, 1),
-                      child: Text(fc.description, style: TextStyle(
-                        color: this.foodCategoryFilter.contains(fc.id)
-                          ? Colors.white
-                          : Color.fromRGBO(189, 187, 173, 1),
-                        fontWeight: FontWeight.bold
-                      )),
-                      onPressed: () => filterCategory(fc.id),
-                    ),
+                    child: this.foodCategoryFilter.contains(fc.id)
+                      ? MaterialButton(
+                          shape: new RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(30.0),
+                          ),
+                          color: Color.fromRGBO(94, 135, 142, 1),
+                          child: Text(fc.description, style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold
+                          )),
+                          onPressed: () => filterCategory(fc.id),
+                        )
+                      : FlatButton(
+                          shape: new RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(30.0),
+                          ),
+                          color: Color.fromRGBO(189, 187, 173, 0.5),
+                          child: Text(fc.description, style: TextStyle(
+                            color: Color.fromRGBO(255, 255, 255, 0.5),
+                            fontWeight: FontWeight.bold
+                          )),
+                          onPressed: () => filterCategory(fc.id),
+                        )
                   ),
                 );
               })
