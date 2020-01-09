@@ -54,10 +54,9 @@ class _RestaurantListParentScreenState
             weekDay.month == todayDateTime.month &&
             weekDay.year == todayDateTime.year;
       });
-      Provider.of<GeneralInfo>(context).setWeekDayIndex(todayIndex);
-
       // TODO: check why this delayed is needed -> otherwise a exception happens
       Future.delayed(Duration.zero, () async {
+        Provider.of<GeneralInfo>(context).setWeekDayIndex(todayIndex);
         Provider.of<GeneralInfo>(context).setLoadingRestaurants(true);
         Provider.of<GeneralInfo>(context).setLoadingCategories(true);
         if (weekdays.length > 0) {

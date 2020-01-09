@@ -99,7 +99,7 @@ class MenusList extends StatelessWidget {
                               ),
                               Container(
                                   child: Text(
-                                      menus[i].price + ' €',
+                                      menus[i].price.toStringAsFixed(2) + ' €',
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,

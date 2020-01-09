@@ -5,7 +5,7 @@ import 'foodCategory.dart';
 
 class Menu with ChangeNotifier {
   final String id;
-  final String price;
+  final double price;
   final DateTime date;
   final List<Course> courses;
   final List<FoodCategory> categories;

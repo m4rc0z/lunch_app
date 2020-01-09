@@ -76,7 +76,7 @@ class Menus with ChangeNotifier {
         loadedMenus.add(
             Menu(
                 id: menu['_id'],
-                price: menu['price'],
+                price: double.parse(menu['price'].toString().replaceAll(',', '.')),
                 courses: loadedCourses,
                 categories: loadedFoodCategories,
                 date: DateTime.parse(menu['date'])));
