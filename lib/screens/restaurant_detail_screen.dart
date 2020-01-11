@@ -3,11 +3,9 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:lunch_app/providers/favorites.dart';
-import 'package:lunch_app/providers/foodCategories.dart';
 import 'package:lunch_app/providers/general_info.dart';
 import 'package:lunch_app/providers/restaurant.dart';
 import 'package:lunch_app/providers/restaurants.dart';
-import 'package:lunch_app/widgets/foodCategoryMenuFilter.dart';
 import 'package:lunch_app/widgets/restaurant_detail_header.dart';
 import 'package:provider/provider.dart';
 
@@ -78,12 +76,6 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
             .firstWhere((r) => r.id == this.restaurantId);
       });
 
-      Provider.of<FoodCategories>(context)
-          .fetchAndSetMenuCategories(
-        this.weekDays[currentIndex],
-        this.weekDays[currentIndex],
-      );
-
       Provider.of<Menus>(context)
           .fetchAndSetMenus(
               this.restaurantId,
@@ -97,14 +89,6 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
     }
     _isInit = false;
     super.didChangeDependencies();
-  }
-
-  void updateCategoriesAndResetFilters(newPage) {
-    Provider.of<GeneralInfo>(context).resetMenuFoodCategoryFilter();
-
-    Provider.of<FoodCategories>(context).setMenuCategories(
-        Provider.of<Menus>(context).getMenuByDateAndCategory(this.restaurantId, weekDays[newPage], Provider.of<GeneralInfo>(context).menuFoodCategoryFilter)
-    );
   }
 
   @override
@@ -157,7 +141,6 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
                         _restaurant,
                         this.currentIndex,
                             (newPage) {
-                              updateCategoriesAndResetFilters(newPage);
                                   // TODO: fetch and set categories for menuCategories -> add new function
                           this._tabController.jumpToPage(newPage);
                         },
@@ -206,25 +189,12 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
                   : Flexible(child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: AnimatedSize(
-                      vsync: this,
-                      duration: Duration(milliseconds: 200),
-                      child: _restaurant != null ?
-                      FoodCategoryMenuTestFilter(
-                        _restaurant != null ? _restaurant.id : null,
-                      )
-                          : Container(),
-                    ),
-                  ),
                   Flexible(
                     child: PageView(
                       controller: _tabController,
                       onPageChanged: (newPage) {
                         setState(() {
                           this.currentIndex = newPage;
-                          updateCategoriesAndResetFilters(newPage);
                         });
                       },
                       children: _tabList,

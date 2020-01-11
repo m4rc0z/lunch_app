@@ -18,25 +18,14 @@ class Menus with ChangeNotifier {
     return [..._items];
   }
 
-  List<Menu> getMenuByDateAndCategory(String restaurantId, DateTime date,
-      List<String> foodCategoryFilter) {
+  List<Menu> getMenuByDate(String restaurantId, DateTime date) {
     var filteredMenus = this._items
         .where(
             (restaurantMenu) =>
         restaurantMenu.id == restaurantId &&
             restaurantMenu.menu.date.day == date.day &&
             restaurantMenu.menu.date.month == date.month &&
-            restaurantMenu.menu.date.year == date.year &&
-            (
-                foodCategoryFilter.length > 0
-                    ? foodCategoryFilter
-                    .firstWhere((fc) =>
-                restaurantMenu.menu.categories.indexWhere((c) => c.id == fc) !=
-                    -1,
-                    orElse: () => null
-                ) != null
-                    : true
-            )
+            restaurantMenu.menu.date.year == date.year
         )
         .map((filteredItem) => filteredItem.menu)
         .toList();

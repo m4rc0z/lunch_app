@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lunch_app/providers/general_info.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/menus.dart';
@@ -13,7 +12,7 @@ class MenusList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final menusData = Provider.of<Menus>(context).getMenuByDateAndCategory(this.restaurantId, this.menuFilterDate, Provider.of<GeneralInfo>(context).menuFoodCategoryFilter);
+    final menusData = Provider.of<Menus>(context).getMenuByDate(this.restaurantId, this.menuFilterDate);
     final menus = menusData;
     return Container(
       color: Color.fromRGBO(242, 241, 240, 1),

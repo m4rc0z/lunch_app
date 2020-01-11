@@ -17,12 +17,6 @@ class GeneralInfo with ChangeNotifier {
     return [..._foodCategoryFilter];
   }
 
-  List<String> _menuFoodCategoryFilter = [];
-
-  List<String> get menuFoodCategoryFilter {
-    return [..._menuFoodCategoryFilter];
-  }
-
   setWeekDayIndex(int value) {
     this.currentWeekdayIndex = value;
     notifyListeners();
@@ -36,10 +30,6 @@ class GeneralInfo with ChangeNotifier {
   setLoadingCategories(bool value) {
     this.isLoadingCategories = value;
     notifyListeners();
-  }
-
-  initMenuFoodCategoryBasedOnRestaurantFoodCategory() {
-    this._menuFoodCategoryFilter = [...this.foodCategoryFilter];
   }
 
   setDateRangeAndWeekDays(DateTime fromDate, DateTime toDate, List<DateTime> weekDays) {
@@ -58,22 +48,8 @@ class GeneralInfo with ChangeNotifier {
     notifyListeners();
   }
 
-  toggleMenuFoodCategory(String foodCategoryId) {
-    if (menuFoodCategoryFilter.contains(foodCategoryId)) {
-      _menuFoodCategoryFilter.remove(foodCategoryId);
-    } else {
-      _menuFoodCategoryFilter.add(foodCategoryId);
-    }
-    notifyListeners();
-  }
-
   resetRestaurantFoodCategoryFilter() {
     _foodCategoryFilter = [];
-    notifyListeners();
-  }
-
-  resetMenuFoodCategoryFilter() {
-    _menuFoodCategoryFilter = [];
     notifyListeners();
   }
 

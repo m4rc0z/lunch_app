@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:lunch_app/providers/favorites.dart';
-import 'package:lunch_app/providers/general_info.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/restaurants.dart';
@@ -142,8 +141,6 @@ class RestaurantsList extends StatelessWidget {
   }
 
   navigateToRestaurant(BuildContext ctx, String id) {
-    Provider.of<GeneralInfo>(ctx)
-        .initMenuFoodCategoryBasedOnRestaurantFoodCategory();
     Navigator.of(ctx)
         .push(SlideBottomRoute(page: RestaurantDetailScreen(id, currentIndex)));
   }
