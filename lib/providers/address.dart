@@ -11,4 +11,8 @@ class Address with ChangeNotifier {
     @required this.city,
   });
 
+  @override
+  String toString() {
+    return this.addressLine + ' ' + this.postalCode + ' ' + this.city;
+  }
 }

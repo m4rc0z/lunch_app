@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:lunch_app/providers/general_info.dart';
 import 'package:lunch_app/widgets/foodCategoryRestaurantFilter.dart';
+import 'package:lunch_app/widgets/title_section.dart';
 import 'package:lunch_app/widgets/weekday_navigation_bar.dart';
 import 'package:provider/provider.dart';
 
@@ -60,14 +61,8 @@ class _RestaurantsFavouritesListScreenState extends State<RestaurantsFavouritesL
     return Scaffold(
         appBar: AppBar(
           elevation: 0.0,
-          backgroundColor: Color.fromRGBO(242, 241, 240, 1),
-          title: Center(
-            child: Container(
-              child: Image(
-                image: AssetImage('assets/mealit_logo.png'),
-              ),
-            ),
-          ),
+          backgroundColor: Colors.white,
+          title: Center(child: TitleSection()),
           bottom: PreferredSize(
             preferredSize: Size.fromHeight(150),
             child: Expanded(
@@ -86,7 +81,7 @@ class _RestaurantsFavouritesListScreenState extends State<RestaurantsFavouritesL
           ),
         ),
         body: Container(
-          color: Color.fromRGBO(242, 241, 240, 1),
+          color: Colors.white,
           child: !Provider.of<GeneralInfo>(context).isLoadingRestaurants
             ? Container(
             // TODO: check how to set background color globally

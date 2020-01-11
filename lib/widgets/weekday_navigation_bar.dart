@@ -12,7 +12,7 @@ class WeekDayNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Theme(
       data: Theme.of(context).copyWith(
-        canvasColor: Color.fromRGBO(242, 241, 240, 1),
+        canvasColor: Colors.white,
       ),
       child: Container(
         child: BottomNavigationBar(

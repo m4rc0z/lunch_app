@@ -96,7 +96,7 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
     final favorite = Provider.of<Favorites>(context).getFavoriteStatus(restaurantId);
     return Scaffold(
       body: Container(
-        color: Color.fromRGBO(242, 241, 240, 1),
+        color: Colors.white,
         child: Column(
             children: <Widget>[
               Container(

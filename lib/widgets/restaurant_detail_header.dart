@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lunch_app/providers/restaurant.dart';
 import 'package:lunch_app/widgets/weekday_navigation_bar.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class RestaurantDetailHeader extends StatelessWidget {
   final Restaurant restaurant;
@@ -11,6 +12,16 @@ class RestaurantDetailHeader extends StatelessWidget {
   RestaurantDetailHeader(
       this.restaurant, this.currentIndex, this.navigateTo, this.weekDays);
 
+  _launchURL() async {
+    String query = Uri.encodeComponent(this.restaurant.name + ' ' + this.restaurant.address.toString());
+    var url = 'http://maps.google.com/?q=$query';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -18,7 +29,7 @@ class RestaurantDetailHeader extends StatelessWidget {
         children: <Widget>[
           Container(
             decoration: BoxDecoration(
-                color: Color.fromRGBO(242, 241, 240, 1),
+                color: Colors.white,
                 borderRadius: BorderRadius.only(
                     topRight: Radius.circular(20),
                     topLeft: Radius.circular(20))),
@@ -34,6 +45,7 @@ class RestaurantDetailHeader extends StatelessWidget {
                         style: TextStyle(fontSize: 30)), // TODO: use theming and fonts
                   ),
                 ),
+                MaterialButton(child: const Icon(Icons.navigation), onPressed: this._launchURL,),
                 WeekDayNavigationBar(this.weekDays, this.currentIndex, this.navigateTo)
               ],
             ),

@@ -15,7 +15,7 @@ class MenusList extends StatelessWidget {
     final menusData = Provider.of<Menus>(context).getMenuByDate(this.restaurantId, this.menuFilterDate);
     final menus = menusData;
     return Container(
-      color: Color.fromRGBO(242, 241, 240, 1),
+      color: Colors.white,
       child: menus.length > 0
           ? ListView.builder(
         padding: const EdgeInsets.all(10.0),

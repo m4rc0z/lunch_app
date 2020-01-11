@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:lunch_app/providers/general_info.dart';
 import 'package:lunch_app/widgets/foodCategoryRestaurantFilter.dart';
+import 'package:lunch_app/widgets/title_section.dart';
 import 'package:lunch_app/widgets/weekday_navigation_bar.dart';
 import 'package:provider/provider.dart';
 
@@ -59,16 +60,10 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen>
     return Scaffold(
         appBar: AppBar(
           elevation: 0.0,
-          backgroundColor: Color.fromRGBO(242, 241, 240, 1),
-          title: Center(
-            child: Container(
-              child: Image(
-                image: AssetImage('assets/mealit_logo.png'),
-              ),
-            ),
-          ),
+          backgroundColor: Colors.white,
+          title: Center(child: TitleSection()),
           bottom: PreferredSize(
-            preferredSize: Size.fromHeight(150),
+            preferredSize: Size.fromHeight(120),
             child: Expanded(
               flex: 2,
               child: Container(
@@ -84,19 +79,41 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen>
           ),
         ),
         body: Container(
-          color: Color.fromRGBO(242, 241, 240, 1),
+          color: Colors.white,
           child: !Provider.of<GeneralInfo>(context).isLoadingRestaurants
               ? Container(
                   // TODO: check how to set background color globally
                   child: Column(
                     children: <Widget>[
-                      AnimatedSize(
-                        vsync: this,
-                        duration: Duration(milliseconds: 200),
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 20.0),
-                          child: FoodCategoryRestaurantFilter(),
-                        ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: 15.0, right: 15.0, bottom: 18.0, top: 18.0),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                'RESTAURANTS \nIN DEINER NÄHE',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 25),
+                              ),
+                              Material(
+                                color: Color.fromRGBO(94, 135, 142, 1),
+                                shadowColor: Colors.transparent,
+                                elevation: 4.0,
+                                shape: CircleBorder(),
+                                clipBehavior: Clip.hardEdge,
+                                child: InkWell(
+                                  child: new IconButton(
+                                    icon: new Icon(
+                                      Icons.filter_list,
+                                      color: Colors.white,
+                                      size: 35,
+                                    ),
+                                    onPressed: () => showFilter(context),
+                                  ),
+                                ),
+                              ),
+                            ]),
                       ),
                       Expanded(
                         child: RestaurantsList(
@@ -114,5 +131,66 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen>
                   ),
                 ),
         ));
+  }
+
+  void showFilter(BuildContext ctx) {
+    showModalBottomSheet(
+        context: ctx,
+        builder: (_) {
+          return Container(
+              child: Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Expanded(
+                      child: Padding(
+                          padding: const EdgeInsets.only(left: 32.0),
+                          child: Text(
+                            'RESTAURANT FILTER',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Color.fromRGBO(94, 135, 142, 1),
+                              fontSize: 18,
+                            ),
+                          )),
+                    ),
+                    new IconButton(
+                      icon: new Icon(
+                        Icons.close,
+                        color: Colors.black,
+                        size: 35,
+                      ),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(),
+              Expanded(
+                child: FoodCategoryRestaurantFilter(),
+              ),
+              Divider(),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 17),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: FlatButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(10.0),
+                    ),
+                    textColor: Colors.white,
+                    child: Text('BESTÄTIGEN'),
+                    color: Color.fromRGBO(94, 135, 142, 1),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ),
+              )
+            ],
+          ));
+        });
   }
 }
