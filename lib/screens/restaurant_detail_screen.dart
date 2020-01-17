@@ -93,6 +93,15 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
 
   @override
   Widget build(BuildContext context) {
+    final controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 300),
+    );
+    var fadeAnimation = Tween(
+        begin: 1.0,
+        end: 1.0
+    ).animate(controller);
+
     final favorite = Provider.of<Favorites>(context).getFavoriteStatus(restaurantId);
     return Scaffold(
       body: Container(
@@ -100,7 +109,7 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
         child: Column(
             children: <Widget>[
               Container(
-                height: 350,
+                height: 375,
                 child: Stack(
                   fit: StackFit.expand,
                   children: <Widget>[
@@ -141,8 +150,11 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
                         _restaurant,
                         this.currentIndex,
                             (newPage) {
+                              setState(() {
+                                this.currentIndex = newPage;
+                              });
                                   // TODO: fetch and set categories for menuCategories -> add new function
-                          this._tabController.jumpToPage(newPage);
+//                          this._tabController.jumpToPage(newPage);
                         },
                         this.weekDays,
                       ),
@@ -186,21 +198,100 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
                   ? Expanded(child:Center(
                       child: CircularProgressIndicator(),
                     ))
-                  : Flexible(child: Column(
-                mainAxisSize: MainAxisSize.min,
+                  : Flexible(
+                  child: MediaQuery.removePadding(
+                    context: context,
+                    removeTop: true,
+                    child: ListView(
+                shrinkWrap: true,
                 children: <Widget>[
-                  Flexible(
-                    child: PageView(
-                      controller: _tabController,
-                      onPageChanged: (newPage) {
-                        setState(() {
-                          this.currentIndex = newPage;
-                        });
-                      },
-                      children: _tabList,
-                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                          child: Container(
+                            child: Text(
+                              'MITTAGSMENÜS',
+                              style: TextStyle(
+                                  color: Color.fromRGBO(0, 0, 0, 0.2),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13.0
+                              ),
+                            ),
+                            alignment: Alignment.topLeft,
+                          ),
+                        ),
+//                        AnimatedSize(
+//                          vsync: this,
+//                          curve: Curves.easeInOut,
+//                          duration: Duration(milliseconds: 300),
+//                            child: FadeTransition(
+//                              opacity: fadeAnimation,
+//                                child: MenusList(this.restaurantId, this.weekDays[this.currentIndex]),
+//                            )
+//                        )
+                        MenusList(this.restaurantId, this.weekDays[this.currentIndex]),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                          child: Container(
+                            child: Text(
+                                'WEGBESCHREIBUNG',
+                              style: TextStyle(
+                                color: Color.fromRGBO(0, 0, 0, 0.2),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13.0
+                              ),
+                            ),
+                            alignment: Alignment.topLeft,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 15.0),
+                          child: Container(
+                            child: Image(
+                              fit: BoxFit.cover,
+                              image: AssetImage('assets/mealit_logo.png'),
+                            ), alignment: Alignment.center,),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  Container(child: Icon(Icons.location_on),),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Container(child: Text('TANZENPLATZ 2', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),), alignment: Alignment.topLeft,),
+                                      Container(child: Text('79713 BAD SÄCKINGEN', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),), alignment: Alignment.topLeft,),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              MaterialButton(
+                                shape: new RoundedRectangleBorder(
+                                  borderRadius: new BorderRadius.circular(10.0),
+                                ),
+                                color: Color.fromRGBO(94, 135, 142, 1),
+                                textColor: Colors.white,
+                                child: Row(
+                                  children: <Widget>[
+                                    Icon(Icons.navigation, size: 18.0,), // TODO: use different icon
+                                    Text('Navigieren'),
+                                  ],
+                                ),
+                                onPressed: () => print('navigate'),
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    )
+                ],),
                   )
-                ],)
               )])
       ),
     );

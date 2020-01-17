@@ -45,8 +45,9 @@ class RestaurantDetailHeader extends StatelessWidget {
                         style: TextStyle(fontSize: 30)), // TODO: use theming and fonts
                   ),
                 ),
-                MaterialButton(child: const Icon(Icons.navigation), onPressed: this._launchURL,),
-                WeekDayNavigationBar(this.weekDays, this.currentIndex, this.navigateTo)
+//                MaterialButton(child: const Icon(Icons.navigation), onPressed: this._launchURL,),
+                WeekDayNavigationBar(this.weekDays, this.currentIndex, this.navigateTo),
+                Divider(),
               ],
             ),
           ),
