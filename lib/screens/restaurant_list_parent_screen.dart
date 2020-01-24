@@ -66,7 +66,8 @@ class _RestaurantListParentScreenState
               .setDateRangeAndWeekDays(fromDate, toDate, weekdays);
           try {
             await Provider.of<Restaurants>(context).fetchAndSetRestaurants(
-              Provider.of<GeneralInfo>(context).foodCategoryFilter,
+              null,
+              null,
               fromDate,
               toDate,
             );
@@ -78,10 +79,12 @@ class _RestaurantListParentScreenState
           }
           try {
             await Provider.of<FoodCategories>(context)
-                .fetchAndSetRestaurantCategories(
+                .fetchAndSetRestaurantMenuCategories(
               weekdays[weekdays.indexOf(today)],
               weekdays[weekdays.indexOf(today)],
             );
+            await Provider.of<FoodCategories>(context)
+                .fetchAndSetRestaurantCategories();
           } catch (error) {
             _scaffoldKey.currentState
                 .showSnackBar(SnackBar(content: Text('Verbindungsprobleme')));
@@ -102,14 +105,14 @@ class _RestaurantListParentScreenState
     Provider.of<GeneralInfo>(context).setLoadingRestaurants(true);
     Provider.of<GeneralInfo>(context).setLoadingCategories(true);
 
-    Provider.of<GeneralInfo>(context).resetRestaurantFoodCategoryFilter();
-
     try {
       await Provider.of<FoodCategories>(context)
-          .fetchAndSetRestaurantCategories(
+          .fetchAndSetRestaurantMenuCategories(
         weekdays[selectedIndex],
         weekdays[selectedIndex],
       );
+      await Provider.of<FoodCategories>(context)
+          .fetchAndSetRestaurantCategories();
     } catch (error) {
       _scaffoldKey.currentState
           .showSnackBar(SnackBar(content: Text('Verbindungsprobleme')));
@@ -118,8 +121,11 @@ class _RestaurantListParentScreenState
     }
 
     try {
+      await Provider.of<GeneralInfo>(context)
+          .setDateRangeAndWeekDays(weekdays[selectedIndex], weekdays[selectedIndex], weekdays);
       await Provider.of<Restaurants>(context).fetchAndSetRestaurants(
-        Provider.of<GeneralInfo>(context).foodCategoryFilter,
+        null,
+        null,
         weekdays[selectedIndex],
         weekdays[selectedIndex],
       );

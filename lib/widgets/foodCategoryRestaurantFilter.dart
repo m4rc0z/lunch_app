@@ -1,27 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:lunch_app/providers/foodCategories.dart';
-import 'package:lunch_app/providers/general_info.dart';
-import 'package:lunch_app/providers/restaurants.dart';
 import 'package:provider/provider.dart';
 
 import 'food_category_filter.dart';
 
 class FoodCategoryRestaurantFilter extends StatelessWidget {
+  final void Function(String) filterRestaurantFoodCategory;
+  final List<String> foodCategoryFilter;
+
+  FoodCategoryRestaurantFilter(this.filterRestaurantFoodCategory, this.foodCategoryFilter);
+
   @override
   Widget build(BuildContext context) {
-    filterCategories(String id) {
-      Provider.of<GeneralInfo>(context).toggleFoodCategory(id);
-      Provider.of<Restaurants>(context).fetchAndSetRestaurants(
-          Provider.of<GeneralInfo>(context).foodCategoryFilter,
-          Provider.of<GeneralInfo>(context).fromDate,
-          Provider.of<GeneralInfo>(context).toDate);
-    }
-
     return Container(
       child: FoodCategoryFilter(
-        Provider.of<FoodCategories>(context).restaurantItems,
-        Provider.of<GeneralInfo>(context).foodCategoryFilter,
-        filterCategories,
+        Provider.of<FoodCategories>(context).restaurantFoodCategoryItems,
+        this.foodCategoryFilter,
+        this.filterRestaurantFoodCategory,
+        'ALTERNATIVE ERNÄHRUNGSFORM'
       ),
     );
   }

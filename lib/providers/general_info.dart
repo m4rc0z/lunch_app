@@ -8,6 +8,7 @@ class GeneralInfo with ChangeNotifier {
   int currentWeekdayIndex = 0;
   List<DateTime> _weekDays;
   List<String> _foodCategoryFilter = [];
+  List<String> _restaurantCategoryFilter = [];
 
   List<DateTime> get weekDays  {
     return _weekDays != null ? [..._weekDays] : [];
@@ -15,6 +16,10 @@ class GeneralInfo with ChangeNotifier {
 
   List<String> get foodCategoryFilter {
     return [..._foodCategoryFilter];
+  }
+
+  List<String> get restaurantCategoryFilter {
+    return [..._restaurantCategoryFilter];
   }
 
   setWeekDayIndex(int value) {
@@ -39,17 +44,13 @@ class GeneralInfo with ChangeNotifier {
     notifyListeners();
   }
 
-  toggleFoodCategory(String foodCategoryId) {
-    if (foodCategoryFilter.contains(foodCategoryId)) {
-      _foodCategoryFilter.remove(foodCategoryId);
-    } else {
-      _foodCategoryFilter.add(foodCategoryId);
-    }
+  setFoodCategory(List<String> foodCategoryList) {
+    this._foodCategoryFilter = foodCategoryList;
     notifyListeners();
   }
 
-  resetRestaurantFoodCategoryFilter() {
-    _foodCategoryFilter = [];
+  setRestaurantCategory(List<String> restaurantCategoryList) {
+    this._restaurantCategoryFilter = restaurantCategoryList;
     notifyListeners();
   }
 

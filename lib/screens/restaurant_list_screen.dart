@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:lunch_app/providers/general_info.dart';
-import 'package:lunch_app/widgets/foodCategoryRestaurantFilter.dart';
+import 'package:lunch_app/widgets/restaurant_filter.dart';
 import 'package:lunch_app/widgets/title_section.dart';
 import 'package:lunch_app/widgets/weekday_navigation_bar.dart';
 import 'package:provider/provider.dart';
@@ -135,62 +135,15 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen>
 
   void showFilter(BuildContext ctx) {
     showModalBottomSheet(
+      shape: RoundedRectangleBorder(
+        borderRadius: new BorderRadius.vertical(top: Radius.circular(10.0)),
+      ),
         context: ctx,
         builder: (_) {
-          return Container(
-              child: Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Expanded(
-                      child: Padding(
-                          padding: const EdgeInsets.only(left: 32.0),
-                          child: Text(
-                            'RESTAURANT FILTER',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Color.fromRGBO(94, 135, 142, 1),
-                              fontSize: 18,
-                            ),
-                          )),
-                    ),
-                    new IconButton(
-                      icon: new Icon(
-                        Icons.close,
-                        color: Colors.black,
-                        size: 35,
-                      ),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ],
-                ),
-              ),
-              Divider(),
-              Expanded(
-                child: FoodCategoryRestaurantFilter(),
-              ),
-              Divider(),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 17),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: FlatButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(10.0),
-                    ),
-                    textColor: Colors.white,
-                    child: Text('BESTÄTIGEN'),
-                    color: Color.fromRGBO(94, 135, 142, 1),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                ),
-              )
-            ],
-          ));
+          return new RestaurantFilter(
+              Provider.of<GeneralInfo>(context).restaurantCategoryFilter,
+              Provider.of<GeneralInfo>(context).foodCategoryFilter,
+          );
         });
   }
 }

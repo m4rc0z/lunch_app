@@ -19,7 +19,6 @@ class MenusList extends StatelessWidget {
   MenusList(this.restaurantId, this.menuFilterDate);
 
   loadMenus(List<Menu> menus) {
-
       menusList.forEach((it) {
         _listKey.currentState.removeItem(
           0,

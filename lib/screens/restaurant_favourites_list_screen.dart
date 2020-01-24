@@ -92,7 +92,7 @@ class _RestaurantsFavouritesListScreenState extends State<RestaurantsFavouritesL
                   duration: Duration(milliseconds: 200),
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 20.0),
-                    child: FoodCategoryRestaurantFilter(),
+                    child: FoodCategoryRestaurantFilter((t) {}, []), // TODO: fix this
                   ),
                 ),
                 Expanded(

@@ -109,21 +109,30 @@ class Restaurants with ChangeNotifier {
     }
   }
 
-  Future<void> fetchAndSetRestaurants(List<String> foodCategoryFilter,
-      DateTime fromDate, DateTime toDate) async {
+  Future<void> fetchAndSetRestaurants(
+    List<String> foodCategoryFilter,
+    List<String> restaurantCategoryFilter,
+    DateTime fromDate,
+    DateTime toDate
+  ) async {
     var c = new Completer();
     _isFetching = true;
     Geolocator geoLocator = Geolocator();
     var response;
 
     var url;
-    if (foodCategoryFilter.length > 0) {
+    if (foodCategoryFilter != null && foodCategoryFilter.length > 0) {
       url = environment['baseUrl'] + '/restaurants?categories=' +
           foodCategoryFilter.join(',') + '&fromDate=' +
           fromDate.toIso8601String() + '&toDate=' + toDate.toIso8601String();
     } else {
       url = environment['baseUrl'] + '/restaurants?fromDate=' +
           fromDate.toIso8601String() + '&toDate=' + toDate.toIso8601String();
+    }
+
+    if (restaurantCategoryFilter != null && restaurantCategoryFilter.length > 0) {
+      url = url + '&restaurantCategories=' +
+          restaurantCategoryFilter.join(',');
     }
     try {
       Future.wait([
@@ -154,6 +163,7 @@ class Restaurants with ChangeNotifier {
                   city: restaurantData['city'],
                 ),
                 imageUrl: restaurantData['imageUrl'],
+                mapImageUrl: restaurantData['mapImageUrl'],
                 distance: this.currLocation != null
                     ? await getDistance(
                     geoLocator, this.currLocation, restaurantData['latitude'], restaurantData['longitude'])

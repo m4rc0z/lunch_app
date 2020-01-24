@@ -10,6 +10,7 @@ class Restaurant with ChangeNotifier {
   final Address address;
   final double distance;
   final String imageUrl;
+  final String mapImageUrl;
   // TODO: resolve warnings when restaurant call happens and menus get initialzed not fully -> check if rest endpoint only returns menu id
 
   Restaurant({
@@ -19,6 +20,7 @@ class Restaurant with ChangeNotifier {
     @required this.address,
     @required this.distance,
     @required this.imageUrl,
+    @required this.mapImageUrl,
   });
 
 }

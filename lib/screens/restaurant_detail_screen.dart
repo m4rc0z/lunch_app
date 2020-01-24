@@ -79,8 +79,8 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
       Provider.of<Menus>(context)
           .fetchAndSetMenus(
               this.restaurantId,
-              Provider.of<GeneralInfo>(context).fromDate,
-              Provider.of<GeneralInfo>(context).toDate)
+              Provider.of<GeneralInfo>(context).weekDays[0],
+              Provider.of<GeneralInfo>(context).weekDays[6])
           .then((_) {
         setState(() {
           _isLoading = false;
@@ -126,7 +126,8 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
                                 child: ColorFiltered(
                                   colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.darken),
                                   child: Container(
-                                    child: CachedNetworkImage(
+                                    child: _restaurant.imageUrl != null
+                                        ? CachedNetworkImage(
                                       imageUrl: _restaurant.imageUrl,
                                       placeholder: (context, url) => Container(
                                           color: Colors.transparent,
@@ -135,6 +136,7 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
                                       errorWidget: (context, url, error) => Container(color: Color.fromRGBO(189, 187, 173, 1)),
                                       fit: BoxFit.fitWidth,
                                     )
+                                        : Container()
                                   ),
                                 )
                               )
@@ -249,10 +251,18 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 15.0),
                           child: Container(
-                            child: Image(
-                              fit: BoxFit.cover,
-                              image: AssetImage('assets/mealit_logo.png'),
-                            ), alignment: Alignment.center,),
+                            child: _restaurant.mapImageUrl != null
+                            ? CachedNetworkImage(
+                                imageUrl: _restaurant.mapImageUrl,
+                                placeholder: (context, url) => Container(
+                                    color: Colors.transparent,
+                                    child: FittedBox(fit: BoxFit.scaleDown, child: CircularProgressIndicator())
+                                ),
+                                errorWidget: (context, url, error) => Container(color: Color.fromRGBO(189, 187, 173, 1)),
+                                fit: BoxFit.cover,
+                              )
+                             : Container(),
+                            alignment: Alignment.center,),
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 15.0),
