@@ -44,10 +44,10 @@ class FoodCategoryFilter extends StatelessWidget {
                             child: ConstrainedBox(
                               constraints: new BoxConstraints(
                                 minHeight: 30.0,
-                                minWidth: 100.0,
+                                minWidth: 120.0,
                               ),
                               child: Container(
-                                  height: 30,
+                                  height: 50,
                                   child: this.foodCategoryFilter.contains(fc.id)
                                       ? MaterialButton(
                                           shape: new RoundedRectangleBorder(
@@ -56,7 +56,7 @@ class FoodCategoryFilter extends StatelessWidget {
                                           ),
                                           color:
                                               Color.fromRGBO(94, 135, 142, 1),
-                                          child: Text(fc.description,
+                                          child: Text(fc.description.toUpperCase(),
                                               style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 14.0,
@@ -71,8 +71,9 @@ class FoodCategoryFilter extends StatelessWidget {
                                           ),
                                           color: Color.fromRGBO(
                                               189, 187, 173, 0.5),
-                                          child: Text(fc.description,
+                                          child: Text(fc.description.toUpperCase(),
                                               style: TextStyle(
+                                                  fontSize: 14.0,
                                                   color: Color.fromRGBO(
                                                       255, 255, 255, 0.5),
                                                   fontWeight: FontWeight.bold)),
