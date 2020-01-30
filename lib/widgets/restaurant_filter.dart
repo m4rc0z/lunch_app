@@ -117,7 +117,7 @@ class _RestaurantFilterState extends State<RestaurantFilter> {
                   height: 50,
                   child: FlatButton(
                     shape: RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(10.0),
+                      borderRadius: new BorderRadius.circular(5.0),
                     ),
                     textColor: Colors.white,
                     child: Text('BESTÄTIGEN'),

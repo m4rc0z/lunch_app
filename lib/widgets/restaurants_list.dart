@@ -89,7 +89,7 @@ class RestaurantsList extends StatelessWidget {
                             Container(
                               child: Text(
                                 restaurants[i].distance != null
-                                    ? (restaurants[i].distance / 1000.00).toStringAsFixed(1) + 'km'
+                                    ? (restaurants[i].distance / 1000.00).toStringAsFixed(1) + 'KM'
                                     : '',
                                 style: TextStyle(
                                   color: Colors.white,

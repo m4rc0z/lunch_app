@@ -157,6 +157,8 @@ class Restaurants with ChangeNotifier {
                 id: restaurantData['RID'],
                 name: restaurantData['name'],
                 menus: loadedMenus,
+                openingTimesLine1: restaurantData['openingTimesLine1'],
+                openingTimesLine2: restaurantData['openingTimesLine2'],
                 address: Address(
                   addressLine: restaurantData['address'],
                   postalCode: restaurantData['postalCode'],
