@@ -354,27 +354,3 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
   }
 }
 
-
-class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
-  final Widget _header;
-
-  _SliverAppBarDelegate(this._header);
-
-  @override
-  double get minExtent => 100;
-
-  @override
-  double get maxExtent => 250;
-
-  @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(child: _header,);
-  }
-
-  @override
-  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
-    return true;
-  }
-}
-
-
