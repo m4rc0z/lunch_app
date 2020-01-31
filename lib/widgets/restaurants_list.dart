@@ -26,137 +26,140 @@ class RestaurantsList extends StatelessWidget {
         itemCount: restaurants.length,
         itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
           value: restaurants[i],
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-            Container(
-              width: double.infinity,
-              child: Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  child: Stack(
-                    fit: StackFit.passthrough,
-                    children: <Widget>[
-                      Container(
-                        height: 170,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20.0)),
-                        child: Hero(
-                          transitionOnUserGestures: true,
-                          tag: 'restaurantHero' + restaurants[i].id,
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              onTap: () => navigateToRestaurant(
-                                  context, restaurants[i].id),
-                              child: ClipRRect(
-                                borderRadius: new BorderRadius.circular(5.0),
-                                child: restaurants[i].imageUrl != null
-                                    ? CachedNetworkImage(
-                                      imageUrl: restaurants[i].imageUrl,
-                                      placeholder: (context, url) => Container(
-                                        color: Colors.transparent,
-                                        child: FittedBox(fit: BoxFit.scaleDown, child: CircularProgressIndicator())
-                                      ),
-                                      errorWidget: (context, url, error) => Container(color: Color.fromRGBO(189, 187, 173, 1)),
-                                      fit: BoxFit.fitWidth,
-                                    )
-                                    : Container(color: Color.fromRGBO(189, 187, 173, 1))
-                          ),
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 25.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+              Container(
+                width: double.infinity,
+                child: Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    child: Stack(
+                      fit: StackFit.passthrough,
+                      children: <Widget>[
+                        Container(
+                          height: 170,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20.0)),
+                          child: Hero(
+                            transitionOnUserGestures: true,
+                            tag: 'restaurantHero' + restaurants[i].id,
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: () => navigateToRestaurant(
+                                    context, restaurants[i].id),
+                                child: ClipRRect(
+                                  borderRadius: new BorderRadius.circular(5.0),
+                                  child: restaurants[i].imageUrl != null
+                                      ? CachedNetworkImage(
+                                        imageUrl: restaurants[i].imageUrl,
+                                        placeholder: (context, url) => Container(
+                                          color: Colors.transparent,
+                                          child: FittedBox(fit: BoxFit.scaleDown, child: CircularProgressIndicator())
+                                        ),
+                                        errorWidget: (context, url, error) => Container(color: Color.fromRGBO(189, 187, 173, 1)),
+                                        fit: BoxFit.fitWidth,
+                                      )
+                                      : Container(color: Color.fromRGBO(189, 187, 173, 1))
+                            ),
+                              ),
                             ),
                           ),
                         ),
+                        Positioned(
+                          right: 4,
+                          top: 4,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+                            child: FavoriteButton(restaurants[i].id),
+                          ),
+                        )
+                      ],
+                    )),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 2.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 5.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Container(
+                            child: Text(
+                              restaurants[i].name != null
+                                  ? restaurants[i].name.toUpperCase()
+                                  : '',
+                              style: TextStyle(
+                                  letterSpacing: 0.6,
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Icon(
+                                Icons.location_on,
+                                color: Colors.black.withOpacity(0.5),
+                                size: 17.0,
+                              ),
+                              SizedBox(width: 5.0,),
+                              Text(
+                                restaurants[i].distance != null
+                                    ? (restaurants[i].distance / 1000.00).toStringAsFixed(1).toUpperCase() + ' KM'
+                                    : '',
+                                style: TextStyle(
+                                  letterSpacing: 0.6,
+                                  color: Colors.black.withOpacity(0.5),
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                      Positioned(
-                        right: 4,
-                        top: 4,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
-                          child: FavoriteButton(restaurants[i].id),
-                        ),
-                      )
-                    ],
-                  )),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 2.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5.0),
-                    child: Row(
+                    ),
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Container(
-                          child: Text(
-                            restaurants[i].name != null
-                                ? restaurants[i].name.toUpperCase()
-                                : '',
-                            style: TextStyle(
-                                letterSpacing: 0.6,
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Icon(
-                              Icons.location_on,
-                              color: Colors.black.withOpacity(0.5),
-                              size: 17.0,
-                            ),
-                            SizedBox(width: 5.0,),
-                            Text(
-                              restaurants[i].distance != null
-                                  ? (restaurants[i].distance / 1000.00).toStringAsFixed(1).toUpperCase() + ' KM'
-                                  : '',
-                              style: TextStyle(
-                                letterSpacing: 0.6,
+                          child: Row(
+                            children: <Widget>[
+                              Icon(
+                                Icons.restaurant_menu,
                                 color: Colors.black.withOpacity(0.5),
-                                fontSize: 14,
+                                size: 17.0,
                               ),
-                            ),
-                          ],
+                              SizedBox(width: 5.0,),
+                              Text(
+                                restaurants[i].categories != null
+                                    && restaurants[i].categories.length > 0
+                                    && restaurants[i].categories[0].description != null
+                                    ? restaurants[i].categories[0].description.toUpperCase()
+                                    : '',
+                                style: TextStyle(
+                                  letterSpacing: 0.6,
+                                  color: Colors.black.withOpacity(0.5),
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Container(
-                        child: Row(
-                          children: <Widget>[
-                            Icon(
-                              Icons.restaurant_menu,
-                              color: Colors.black.withOpacity(0.5),
-                              size: 17.0,
-                            ),
-                            SizedBox(width: 5.0,),
-                            Text(
-                              restaurants[i].categories != null
-                                  && restaurants[i].categories.length > 0
-                                  && restaurants[i].categories[0].description != null
-                                  ? restaurants[i].categories[0].description.toUpperCase()
-                                  : '',
-                              style: TextStyle(
-                                letterSpacing: 0.6,
-                                color: Colors.black.withOpacity(0.5),
-                                fontSize: 14,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ]),
+            ]),
+          ),
         ),
       )
       : Container(child: Text(this.onlyFavourites
