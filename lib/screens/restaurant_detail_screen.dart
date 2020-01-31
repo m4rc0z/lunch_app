@@ -124,9 +124,13 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
           controller: _scrollController,
           slivers: <Widget>[
             SliverAppBar(
-              elevation: 0.0,
+              elevation: isShrink ? 1.0 : 0.0,
               pinned: true,
-              backgroundColor: Colors.transparent,
+              bottom: PreferredSize(                       // Add this code
+                preferredSize: Size.fromHeight(10.0),      // Add this code
+                child: Container(),                           // Add this code
+              ),
+              backgroundColor: Colors.white,
               title: AnimatedOpacity(
                 opacity: isShrink ? 1.0 : 0.0,
                 duration: Duration(milliseconds: 300),
@@ -143,7 +147,7 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
                 Row(
                   children: <Widget>[
                     FavoriteButton(restaurantId),
-                    SizedBox(width: 10,),
+                    SizedBox(width: 10),
                   ],
                 ),
               ],
@@ -185,157 +189,159 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
                   ),
               ),
             ),
-            SliverPersistentHeader(
-              delegate: _SliverAppBarDelegate(RestaurantDetailHeader(
-                  _restaurant,
-                  this.currentIndex,
-                      (newPage) {
-                    setState(() {
-                      this.currentIndex = newPage;
-                    });
-                    // TODO: fetch and set categories for menuCategories -> add new function
-//                          this._tabController.jumpToPage(newPage);
-                  },
-                  this.weekDays,
-                  !this.lastStatus
-              ))
-            ),
             SliverList(
               delegate: SliverChildBuilderDelegate((BuildContext context,
                   int index) {
-                return Container(child:
-                (_isLoading) ? Container(child: Center(
-                  child: CircularProgressIndicator(),
-                )) : Container(
-                    child: MediaQuery.removePadding(
-                      context: context,
-                      removeTop: true,
-                      child: ListView(
-                        physics: new NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        children: <Widget>[
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                return Column(
+                  children: <Widget>[
+                    RestaurantDetailHeader(
+                        _restaurant,
+                        this.currentIndex,
+                            (newPage) {
+                          setState(() {
+                            this.currentIndex = newPage;
+                          });
+                          // TODO: fetch and set categories for menuCategories -> add new function
+//                          this._tabController.jumpToPage(newPage);
+                        },
+                        this.weekDays,
+                        !this.lastStatus
+                    ),
+                    Container(child:
+                    (_isLoading) ? Container(child: Center(
+                      child: CircularProgressIndicator(),
+                    )) : Container(
+                        child: MediaQuery.removePadding(
+                          context: context,
+                          removeTop: true,
+                          child: ListView(
+                            physics: new NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
                             children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 15.0),
-                                child: Container(
-                                  child: Text(
-                                    'MITTAGSMENÜS',
-                                    style: TextStyle(
-                                        color: Color.fromRGBO(0, 0, 0, 0.2),
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 13.0
-                                    ),
-                                  ),
-                                  alignment: Alignment.topLeft,
-                                ),
-                              ),
-                              MenusList(this.restaurantId,
-                                  this.weekDays[this.currentIndex]),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 15.0),
-                                child: Container(
-                                  child: Text(
-                                    'WEGBESCHREIBUNG',
-                                    style: TextStyle(
-                                        color: Color.fromRGBO(0, 0, 0, 0.2),
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 13.0
-                                    ),
-                                  ),
-                                  alignment: Alignment.topLeft,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 15.0, vertical: 15.0),
-                                child: Container(
-                                  child: _restaurant.mapImageUrl != null
-                                      ? CachedNetworkImage(
-                                    imageUrl: _restaurant.mapImageUrl,
-                                    placeholder: (context, url) =>
-                                        Container(
-                                            color: Colors.transparent,
-                                            child: FittedBox(
-                                                fit: BoxFit.scaleDown,
-                                                child: CircularProgressIndicator())
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15.0),
+                                    child: Container(
+                                      child: Text(
+                                        'MITTAGSMENÜS',
+                                        style: TextStyle(
+                                            color: Color.fromRGBO(0, 0, 0, 0.2),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13.0
                                         ),
-                                    errorWidget: (context, url, error) =>
-                                        Container(color: Color.fromRGBO(
-                                            189, 187, 173, 1)),
-                                    fit: BoxFit.cover,
-                                  )
-                                      : Container(),
-                                  alignment: Alignment.center,),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 15.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .spaceBetween,
-                                  children: <Widget>[
-                                    Row(
+                                      ),
+                                      alignment: Alignment.topLeft,
+                                    ),
+                                  ),
+                                  MenusList(this.restaurantId,
+                                      this.weekDays[this.currentIndex]),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15.0),
+                                    child: Container(
+                                      child: Text(
+                                        'WEGBESCHREIBUNG',
+                                        style: TextStyle(
+                                            color: Color.fromRGBO(0, 0, 0, 0.2),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13.0
+                                        ),
+                                      ),
+                                      alignment: Alignment.topLeft,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15.0, vertical: 15.0),
+                                    child: Container(
+                                      child: _restaurant.mapImageUrl != null
+                                          ? CachedNetworkImage(
+                                        imageUrl: _restaurant.mapImageUrl,
+                                        placeholder: (context, url) =>
+                                            Container(
+                                                color: Colors.transparent,
+                                                child: FittedBox(
+                                                    fit: BoxFit.scaleDown,
+                                                    child: CircularProgressIndicator())
+                                            ),
+                                        errorWidget: (context, url, error) =>
+                                            Container(color: Color.fromRGBO(
+                                                189, 187, 173, 1)),
+                                        fit: BoxFit.cover,
+                                      )
+                                          : Container(),
+                                      alignment: Alignment.center,),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15.0),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .spaceBetween,
                                       children: <Widget>[
-                                        Container(
-                                          child: Icon(Icons.location_on),),
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment
-                                              .start,
+                                        Row(
                                           children: <Widget>[
-                                            Container(child: Text(
-                                              'TANZENPLATZ 2', style: TextStyle(
-                                                fontSize: 11,
-                                                fontWeight: FontWeight.bold),),
-                                              alignment: Alignment.topLeft,),
-                                            Container(child: Text(
-                                              '79713 BAD SÄCKINGEN',
-                                              style: TextStyle(fontSize: 11,
-                                                  fontWeight: FontWeight
-                                                      .bold),),
-                                              alignment: Alignment.topLeft,),
+                                            Container(
+                                              child: Icon(Icons.location_on),),
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment
+                                                  .start,
+                                              children: <Widget>[
+                                                Container(child: Text(
+                                                  'TANZENPLATZ 2', style: TextStyle(
+                                                    fontSize: 11,
+                                                    fontWeight: FontWeight.bold),),
+                                                  alignment: Alignment.topLeft,),
+                                                Container(child: Text(
+                                                  '79713 BAD SÄCKINGEN',
+                                                  style: TextStyle(fontSize: 11,
+                                                      fontWeight: FontWeight
+                                                          .bold),),
+                                                  alignment: Alignment.topLeft,),
+                                              ],
+                                            ),
                                           ],
                                         ),
+                                        MaterialButton(
+                                          shape: new RoundedRectangleBorder(
+                                            borderRadius: new BorderRadius.circular(
+                                                5.0),
+                                          ),
+                                          color: Color.fromRGBO(94, 135, 142, 1),
+                                          textColor: Colors.white,
+                                          child: Row(
+                                            children: <Widget>[
+                                              Icon(Icons.navigation, size: 18.0,),
+                                              // TODO: use different icon
+                                              Text('Navigieren', style: TextStyle(
+                                                  fontWeight: FontWeight.bold),),
+                                            ],
+                                          ),
+                                          onPressed: () async {
+                                            String query = Uri.encodeComponent(
+                                                _restaurant.name + ' ' +
+                                                    _restaurant.address.toString());
+                                            var url = 'http://maps.google.com/?q=$query';
+                                            if (await canLaunch(url)) {
+                                              await launch(url);
+                                            } else {
+                                              throw 'Could not launch $url';
+                                            }
+                                          },
+                                        )
                                       ],
                                     ),
-                                    MaterialButton(
-                                      shape: new RoundedRectangleBorder(
-                                        borderRadius: new BorderRadius.circular(
-                                            5.0),
-                                      ),
-                                      color: Color.fromRGBO(94, 135, 142, 1),
-                                      textColor: Colors.white,
-                                      child: Row(
-                                        children: <Widget>[
-                                          Icon(Icons.navigation, size: 18.0,),
-                                          // TODO: use different icon
-                                          Text('Navigieren', style: TextStyle(
-                                              fontWeight: FontWeight.bold),),
-                                        ],
-                                      ),
-                                      onPressed: () async {
-                                        String query = Uri.encodeComponent(
-                                            _restaurant.name + ' ' +
-                                                _restaurant.address.toString());
-                                        var url = 'http://maps.google.com/?q=$query';
-                                        if (await canLaunch(url)) {
-                                          await launch(url);
-                                        } else {
-                                          throw 'Could not launch $url';
-                                        }
-                                      },
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ],
-                          )
-                        ],),
+                                  ),
+                                ],
+                              )
+                            ],),
+                        )
                     )
-                )
+                    ),
+                  ],
                 );
               },
                 childCount: 1,
