@@ -12,6 +12,7 @@ import '../error_logger.dart';
 import '../providers/restaurant.dart';
 import 'address.dart';
 import 'favorites.dart';
+import 'foodCategory.dart';
 import 'menu.dart';
 
 class Restaurants with ChangeNotifier {
@@ -153,12 +154,17 @@ class Restaurants with ChangeNotifier {
             restaurantData['menus'].forEach((menu) {
               loadedMenus.add(Menu(id: menu['_id'], date: DateTime.parse(menu['date'])));
             });
+            final List<FoodCategory> loadedCategories = [];
+            restaurantData['categories'].forEach((category) {
+              loadedCategories.add(FoodCategory(id: category['_id'], description: category['description']));
+            });
             loadedRestaurant.add(Restaurant(
                 id: restaurantData['RID'],
                 name: restaurantData['name'],
                 menus: loadedMenus,
                 openingTimesLine1: restaurantData['openingTimesLine1'],
                 openingTimesLine2: restaurantData['openingTimesLine2'],
+                categories: loadedCategories,
                 address: Address(
                   addressLine: restaurantData['address'],
                   postalCode: restaurantData['postalCode'],

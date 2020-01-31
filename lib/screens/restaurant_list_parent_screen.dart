@@ -121,8 +121,8 @@ class _RestaurantListParentScreenState
     }
 
     try {
-      await Provider.of<GeneralInfo>(context)
-          .setDateRangeAndWeekDays(weekdays[selectedIndex], weekdays[selectedIndex], weekdays);
+      await Provider.of<GeneralInfo>(context).setDateRangeAndWeekDays(
+          weekdays[selectedIndex], weekdays[selectedIndex], weekdays);
       await Provider.of<Restaurants>(context).fetchAndSetRestaurants(
         null,
         null,
@@ -169,41 +169,73 @@ class _RestaurantListParentScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: currentIndex,
-        onTap: (newPage) {
-          setState(() {
-            currentIndex = newPage;
-          });
-          this._tabController.animateToPage(newPage,
-              duration: Duration(milliseconds: 300), curve: Curves.easeOut);
-        },
-        selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
-        selectedItemColor: Color.fromRGBO(94, 135, 142, 1),
-        unselectedItemColor: Color.fromRGBO(189, 187, 173, 1),
-        items: [
-          BottomNavigationBarItem(
-              icon: new Icon(
-                Icons.home,
-                color: Color.fromRGBO(189, 187, 173, 1),
+      bottomNavigationBar: new Theme(
+        data: Theme.of(context).copyWith(
+          // sets the background color of the `BottomNavigationBar`
+          canvasColor: Colors.white,
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black,
               ),
-              activeIcon: new Icon(
-                Icons.home,
-                color: Color.fromRGBO(94, 135, 142, 1),
-              ),
-              title: Text('Home')),
-          BottomNavigationBarItem(
-            icon: new Icon(
-              Icons.favorite,
-              color: Color.fromRGBO(189, 187, 173, 1),
-            ),
-            activeIcon: new Icon(
-              Icons.favorite,
-              color: Color.fromRGBO(94, 135, 142, 1),
-            ),
-            title: Text('Favourites'),
-          )
-        ],
+            ],
+          ),
+          child: BottomNavigationBar(
+            elevation: 0.0,
+            currentIndex: currentIndex,
+            onTap: (newPage) {
+              setState(() {
+                currentIndex = newPage;
+              });
+              this._tabController.animateToPage(newPage,
+                  duration: Duration(milliseconds: 300), curve: Curves.easeOut);
+            },
+            selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
+            selectedItemColor: Color.fromRGBO(94, 135, 142, 1),
+            unselectedItemColor: Colors.black.withOpacity(0.5),
+            items: [
+              BottomNavigationBarItem(
+                  icon: new Icon(
+                    Icons.home,
+                    color: Colors.black.withOpacity(0.5),
+                  ),
+                  activeIcon: new Icon(
+                    Icons.home,
+                    color: Color.fromRGBO(94, 135, 142, 1),
+                  ),
+                  title: Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text('HOME',
+                      style: TextStyle(
+                        letterSpacing: 0.6,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  )),
+              BottomNavigationBarItem(
+                icon: new Icon(
+                  Icons.favorite,
+                  color: Colors.black.withOpacity(0.5),
+                ),
+                activeIcon: new Icon(
+                  Icons.favorite,
+                  color: Color.fromRGBO(94, 135, 142, 1),
+                ),
+                title: Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text('FAVOURITES',
+                    style: TextStyle(
+                      letterSpacing: 0.6,
+                      fontWeight: FontWeight.w700,
+                    ),),
+                ),
+              )
+            ],
+          ),
+        ),
       ),
       body: PageView(
         controller: _tabController,

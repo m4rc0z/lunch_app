@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:lunch_app/providers/favorites.dart';
+import 'package:lunch_app/widgets/favorite_button.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/restaurants.dart';
@@ -26,7 +26,9 @@ class RestaurantsList extends StatelessWidget {
         itemCount: restaurants.length,
         itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
           value: restaurants[i],
-          child: Column(children: [
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
             Container(
               width: double.infinity,
               child: Card(
@@ -36,7 +38,7 @@ class RestaurantsList extends StatelessWidget {
                     fit: StackFit.passthrough,
                     children: <Widget>[
                       Container(
-                        height: 100,
+                        height: 170,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20.0)),
                         child: Hero(
@@ -48,89 +50,112 @@ class RestaurantsList extends StatelessWidget {
                               onTap: () => navigateToRestaurant(
                                   context, restaurants[i].id),
                               child: ClipRRect(
-                                borderRadius: new BorderRadius.circular(20.0),
+                                borderRadius: new BorderRadius.circular(5.0),
                                 child: restaurants[i].imageUrl != null
-                                    ? ColorFiltered(
-                                        colorFilter: ColorFilter.mode(
-                                            Colors.black.withOpacity(0.4),
-                                            BlendMode.darken),
-                                        child: CachedNetworkImage(
-                                          imageUrl: restaurants[i].imageUrl,
-                                          placeholder: (context, url) => Container(
-                                            color: Colors.transparent,
-                                            child: FittedBox(fit: BoxFit.scaleDown, child: CircularProgressIndicator())
-                                          ),
-                                          errorWidget: (context, url, error) => Container(color: Color.fromRGBO(189, 187, 173, 1)),
-                                          fit: BoxFit.fitWidth,
-                                        )
-                                      )
+                                    ? CachedNetworkImage(
+                                      imageUrl: restaurants[i].imageUrl,
+                                      placeholder: (context, url) => Container(
+                                        color: Colors.transparent,
+                                        child: FittedBox(fit: BoxFit.scaleDown, child: CircularProgressIndicator())
+                                      ),
+                                      errorWidget: (context, url, error) => Container(color: Color.fromRGBO(189, 187, 173, 1)),
+                                      fit: BoxFit.fitWidth,
+                                    )
                                     : Container(color: Color.fromRGBO(189, 187, 173, 1))
                           ),
                             ),
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      Positioned(
+                        right: 4,
+                        top: 4,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+                          child: FavoriteButton(restaurants[i].id),
+                        ),
+                      )
+                    ],
+                  )),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 2.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Container(
+                          child: Text(
+                            restaurants[i].name != null
+                                ? restaurants[i].name.toUpperCase()
+                                : '',
+                            style: TextStyle(
+                                letterSpacing: 0.6,
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                        Row(
                           children: <Widget>[
-                            Container(
-                              child: Text(
-                                restaurants[i].name != null
-                                    ? restaurants[i].name
-                                    : '',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w700),
+                            Icon(
+                              Icons.location_on,
+                              color: Colors.black.withOpacity(0.5),
+                              size: 17.0,
+                            ),
+                            SizedBox(width: 5.0,),
+                            Text(
+                              restaurants[i].distance != null
+                                  ? (restaurants[i].distance / 1000.00).toStringAsFixed(1).toUpperCase() + ' KM'
+                                  : '',
+                              style: TextStyle(
+                                letterSpacing: 0.6,
+                                color: Colors.black.withOpacity(0.5),
+                                fontSize: 14,
                               ),
                             ),
-                            Container(
-                              child: Text(
-                                restaurants[i].distance != null
-                                    ? (restaurants[i].distance / 1000.00).toStringAsFixed(1) + 'KM'
-                                    : '',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Container(
+                        child: Row(
+                          children: <Widget>[
+                            Icon(
+                              Icons.restaurant_menu,
+                              color: Colors.black.withOpacity(0.5),
+                              size: 17.0,
+                            ),
+                            SizedBox(width: 5.0,),
+                            Text(
+                              restaurants[i].categories != null
+                                  && restaurants[i].categories.length > 0
+                                  && restaurants[i].categories[0].description != null
+                                  ? restaurants[i].categories[0].description.toUpperCase()
+                                  : '',
+                              style: TextStyle(
+                                letterSpacing: 0.6,
+                                color: Colors.black.withOpacity(0.5),
+                                fontSize: 14,
                               ),
                             ),
                           ],
                         ),
                       ),
-                      Positioned(
-                        right: 0,
-                        top: 0,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-                          child: Material(
-                            color: Colors.transparent,
-                            shadowColor: Colors.transparent,
-                            elevation: 4.0,
-                            shape: CircleBorder(),
-                            clipBehavior: Clip.hardEdge,
-                            child: InkWell(
-                              child: new IconButton(
-                                icon: new Icon(
-                                  Provider.of<Favorites>(context)
-                                          .getFavoriteStatus(restaurants[i].id)
-                                      ? Icons.favorite
-                                      : Icons.favorite_border,
-                                  color: Colors.white,
-                                  size: 35,
-                                ),
-                                onPressed: () => Provider.of<Favorites>(context)
-                                    .toggleFavorite(restaurants[i].id),
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
                     ],
-                  )),
-            )
+                  ),
+                ],
+              ),
+            ),
           ]),
         ),
       )

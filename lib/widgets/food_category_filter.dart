@@ -64,18 +64,16 @@ class FoodCategoryFilter extends StatelessWidget {
                                           onPressed: () =>
                                               filterCategory(fc.id),
                                         )
-                                      : FlatButton(
+                                      : OutlineButton(
                                           shape: new RoundedRectangleBorder(
                                             borderRadius:
                                                 new BorderRadius.circular(10.0),
                                           ),
-                                          color: Color.fromRGBO(
-                                              189, 187, 173, 0.5),
+                                          color: Colors.white,
                                           child: Text(fc.description.toUpperCase(),
                                               style: TextStyle(
                                                   fontSize: 14.0,
-                                                  color: Color.fromRGBO(
-                                                      255, 255, 255, 0.5),
+                                                  color: Colors.black.withOpacity(0.3),
                                                   fontWeight: FontWeight.bold)),
                                           onPressed: () =>
                                               filterCategory(fc.id),

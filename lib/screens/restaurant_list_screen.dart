@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:lunch_app/providers/general_info.dart';
+import 'package:lunch_app/widgets/my_flutter_app_icons.dart';
 import 'package:lunch_app/widgets/restaurant_filter.dart';
 import 'package:lunch_app/widgets/title_section.dart';
 import 'package:lunch_app/widgets/weekday_navigation_bar.dart';
@@ -98,18 +99,21 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen>
                               ),
                               Material(
                                 color: Color.fromRGBO(94, 135, 142, 1),
-                                shadowColor: Colors.transparent,
-                                elevation: 4.0,
+                                shadowColor: Colors.black.withOpacity(0.8),
+                                elevation: 25.0,
                                 shape: CircleBorder(),
                                 clipBehavior: Clip.hardEdge,
-                                child: InkWell(
-                                  child: new IconButton(
-                                    icon: new Icon(
-                                      Icons.filter_list,
-                                      color: Colors.white,
-                                      size: 35,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 4.0),
+                                  child: InkWell(
+                                    child: new IconButton(
+                                      icon: new Icon(
+                                        MyFlutterApp.filter,
+                                        color: Colors.white,
+                                        size: 22,
+                                      ),
+                                      onPressed: () => showFilter(context),
                                     ),
-                                    onPressed: () => showFilter(context),
                                   ),
                                 ),
                               ),

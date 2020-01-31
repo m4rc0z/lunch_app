@@ -7,6 +7,7 @@ import 'package:lunch_app/providers/general_info.dart';
 import 'package:lunch_app/providers/restaurant.dart';
 import 'package:lunch_app/providers/restaurants.dart';
 import 'package:lunch_app/widgets/detail_scaffold.dart';
+import 'package:lunch_app/widgets/favorite_button.dart';
 import 'package:lunch_app/widgets/restaurant_detail_header.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -139,15 +140,11 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
                 ),
               ),
               actions: <Widget>[
-                IconButton(
-                  icon: new Icon(
-                    favorite ?
-                    Icons.favorite
-                        : Icons.favorite_border,
-                    color: isShrink ? Color.fromRGBO(94, 135, 142, 1) : Colors.white,
-                    size: 35,
-                  ),
-                  onPressed: () => Provider.of<Favorites>(context).toggleFavorite(restaurantId),
+                Row(
+                  children: <Widget>[
+                    FavoriteButton(restaurantId),
+                    SizedBox(width: 10,),
+                  ],
                 ),
               ],
               expandedHeight: 220.0,
