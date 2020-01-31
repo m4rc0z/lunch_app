@@ -13,9 +13,15 @@ class TitleSection extends StatelessWidget {
               Icons.location_on,
               color: Color.fromRGBO(94, 135, 142, 1),
             ),
+            SizedBox(width: 5.0,),
             Text(
-              'Bad Säckingen',
-              style: TextStyle(color: Color.fromRGBO(94, 135, 142, 1)),
+              'BAD SÄCKINGEN',
+              style: TextStyle(
+                fontSize: 16.0,
+                color: Color.fromRGBO(94, 135, 142, 1),
+                letterSpacing: 0.6,
+                fontWeight: FontWeight.w300,
+              ),
             )
           ],
         ),
