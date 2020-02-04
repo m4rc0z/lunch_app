@@ -99,7 +99,7 @@ class _DetailScaffoldState extends State<DetailScaffold> {
       child: Container(
         height: edgeSize,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Colors.transparent,
           borderRadius: BorderRadius.vertical(
             top: Radius.circular(12),
           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:lunch_app/providers/general_info.dart';
+import 'package:lunch_app/widgets/detail_scaffold.dart';
 import 'package:lunch_app/widgets/my_flutter_app_icons.dart';
 import 'package:lunch_app/widgets/restaurant_filter.dart';
 import 'package:lunch_app/widgets/title_section.dart';
@@ -25,6 +26,28 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen>
   var weekdays;
   Position currentPosition;
   Geolocator geolocator = Geolocator();
+  ScrollController _scrollController;
+  bool lastStatus = false;
+
+  _scrollListener() {
+    if (isShrink != lastStatus) {
+      setState(() {
+        lastStatus = isShrink;
+      });
+    }
+  }
+
+  bool get isShrink {
+    return _scrollController.hasClients &&
+        _scrollController.offset > (80 - kToolbarHeight);
+  }
+
+  @override
+  void dispose() {
+    _scrollController?.removeListener(_scrollListener);
+    super.dispose();
+  }
+
 
   @override
   void initState() {
@@ -45,6 +68,10 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen>
   @override
   void didChangeDependencies() {
     if (_isInit) {
+      setState(() {
+        _scrollController = ScrollController();
+        _scrollController.addListener(_scrollListener);
+      });
       _getLocation().then((value) {
         currentPosition = value;
       });
@@ -59,33 +86,33 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          elevation: 0.0,
-          backgroundColor: Colors.white,
-          title: Center(child: TitleSection()),
-          bottom: PreferredSize(
-            preferredSize: Size.fromHeight(120),
-            child: Expanded(
-              flex: 2,
-              child: Container(
-                constraints: BoxConstraints.expand(),
-                child: weekdays != null && weekdays.length > 0
-                    ? WeekDayNavigationBar(
-                        weekdays,
-                        Provider.of<GeneralInfo>(context).currentWeekdayIndex,
-                        widget.navigateTo)
-                    : Container(),
-              ),
-            ),
-          ),
-        ),
-        body: Container(
-          color: Colors.white,
-          child: !Provider.of<GeneralInfo>(context).isLoadingRestaurants
-              ? Container(
-                  // TODO: check how to set background color globally
+      body: DetailScaffold(
+        hasPinnedAppBar: true,
+        expandedHeight: 222.0,
+        controller: _scrollController,
+        slivers: <Widget>[
+          MediaQuery.removePadding(
+            context: context,
+            removeBottom: true,
+            child: SliverAppBar(
+              flexibleSpace: MediaQuery.removePadding(context: context, removeTop: true, child: Container()),
+              elevation: 0.0,
+              pinned: true,
+              floating: true,
+              title: lastStatus ? Container() : Center(child: TitleSection()),
+              backgroundColor: Colors.white,
+              bottom: PreferredSize(
+                preferredSize: Size.fromHeight(200),
+                child: Container(
                   child: Column(
                     children: <Widget>[
+                      weekdays != null && weekdays.length > 0
+                          ? WeekDayNavigationBar(
+                              weekdays,
+                              Provider.of<GeneralInfo>(context)
+                                  .currentWeekdayIndex,
+                              widget.navigateTo)
+                          : Container(),
                       Padding(
                         padding: const EdgeInsets.only(
                             left: 15.0, right: 15.0, bottom: 18.0, top: 18.0),
@@ -119,35 +146,83 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen>
                               ),
                             ]),
                       ),
-                      Expanded(
-                        child: RestaurantsList(
-                            Provider.of<GeneralInfo>(context)
-                                .currentWeekdayIndex,
-                            currentPosition,
-                            false),
-                      ),
                     ],
                   ),
-                )
-              : Container(
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
                 ),
-        ));
+              ),
+            ),
+          ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                return Container(
+                  color: Colors.white,
+                  child: !Provider.of<GeneralInfo>(context).isLoadingRestaurants
+                      ? Container(
+                          // TODO: check how to set background color globally
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Container(
+                                child: RestaurantsList(
+                                    Provider.of<GeneralInfo>(context)
+                                        .currentWeekdayIndex,
+                                    currentPosition,
+                                    false),
+                              ),
+                            ],
+                          ),
+                        )
+                      : Container(
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                );
+              },
+              childCount: 1,
+            ),
+          )
+        ],
+      ),
+    );
   }
 
   void showFilter(BuildContext ctx) {
     showModalBottomSheet(
-      shape: RoundedRectangleBorder(
-        borderRadius: new BorderRadius.vertical(top: Radius.circular(10.0)),
-      ),
+        isScrollControlled: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: new BorderRadius.vertical(top: Radius.circular(10.0)),
+        ),
         context: ctx,
         builder: (_) {
           return new RestaurantFilter(
-              Provider.of<GeneralInfo>(context).restaurantCategoryFilter,
-              Provider.of<GeneralInfo>(context).foodCategoryFilter,
+            Provider.of<GeneralInfo>(context).restaurantCategoryFilter,
+            Provider.of<GeneralInfo>(context).foodCategoryFilter,
           );
         });
+  }
+}
+
+class _SliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    // TODO: implement build
+    return Container(color: Colors.white, child: Center(child: TitleSection()));
+  }
+
+  @override
+  // TODO: implement maxExtent
+  double get maxExtent => 100.0;
+
+  @override
+  // TODO: implement minExtent
+  double get minExtent => 0.0;
+
+  @override
+  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
+    // TODO: implement shouldRebuild
+    return true;
   }
 }

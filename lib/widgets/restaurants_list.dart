@@ -22,6 +22,8 @@ class RestaurantsList extends StatelessWidget {
     return Container(
       child: restaurants.length > 0
           ? ListView.builder(
+        physics: new NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
         padding: const EdgeInsets.all(10.0),
         itemCount: restaurants.length,
         itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
@@ -29,7 +31,8 @@ class RestaurantsList extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.only(bottom: 25.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
               children: [
               Container(
                 width: double.infinity,
@@ -83,6 +86,7 @@ class RestaurantsList extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 2.0),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Padding(

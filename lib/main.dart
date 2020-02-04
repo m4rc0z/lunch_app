@@ -17,6 +17,7 @@ Future<Null> main() async {
     Zone.current.handleUncaughtError(details.exception, details.stack);
   };
 
+  WidgetsFlutterBinding.ensureInitialized();
   runZoned<Future<Null>>(() async {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
         .then((_) {

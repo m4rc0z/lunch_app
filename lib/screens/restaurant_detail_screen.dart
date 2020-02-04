@@ -162,7 +162,6 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
               ),
               flexibleSpace: FlexibleSpaceBar(
                   background: Hero(
-                      transitionOnUserGestures: true,
                       tag: 'restaurantHero' + this.restaurantId,
                       child: _restaurant.imageUrl != null
                           ?  Material(

@@ -16,7 +16,7 @@ class FoodCategoryFilter extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: this.foodCategories.length > 0
             ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   Container(
                       // TODO: maybe use chip istead of own container
@@ -36,6 +36,7 @@ class FoodCategoryFilter extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 7.0),
                     child: Wrap(
+                      alignment: WrapAlignment.spaceEvenly,
                         children: <Widget>[
                       ...this.foodCategories.map((fc) {
                         return Padding(
@@ -44,7 +45,7 @@ class FoodCategoryFilter extends StatelessWidget {
                             child: ConstrainedBox(
                               constraints: new BoxConstraints(
                                 minHeight: 30.0,
-                                minWidth: 120.0,
+                                minWidth: 110.0,
                               ),
                               child: Container(
                                   height: 50,
