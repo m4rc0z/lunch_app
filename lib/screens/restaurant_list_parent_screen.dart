@@ -5,7 +5,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:lunch_app/providers/foodCategories.dart';
 import 'package:lunch_app/providers/general_info.dart';
 import 'package:lunch_app/providers/restaurants.dart';
-import 'package:lunch_app/screens/restaurant_favourites_list_screen.dart';
 import 'package:lunch_app/screens/restaurant_list_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -39,8 +38,8 @@ class _RestaurantListParentScreenState
   void didChangeDependencies() {
     if (_isInit) {
       this._tabList = [
-        new RestaurantsListScreen(this.navigateTo),
-        new RestaurantsFavouritesListScreen(this.navigateTo)
+        new RestaurantsListScreen(this.navigateTo, false),
+        new RestaurantsListScreen(this.navigateTo, true),
       ];
       var todayDateTime = DateTime.now();
       weekdays = DateUtil.getWeekDaysForDate(todayDateTime);
@@ -157,8 +156,8 @@ class _RestaurantListParentScreenState
       }
     });
     this._tabList = [
-      new RestaurantsListScreen(this.navigateTo),
-      new RestaurantsFavouritesListScreen(this.navigateTo)
+      new RestaurantsListScreen(this.navigateTo, false),
+      new RestaurantsListScreen(this.navigateTo, true),
     ];
     this._tabController = new PageController(
       initialPage: currentIndex,

@@ -13,8 +13,9 @@ import '../widgets/restaurants_list.dart';
 
 class RestaurantsListScreen extends StatefulWidget {
   final void Function(int) navigateTo;
+  final bool isFavourite;
 
-  RestaurantsListScreen(this.navigateTo);
+  RestaurantsListScreen(this.navigateTo, this.isFavourite);
 
   @override
   _RestaurantsListScreenState createState() => _RestaurantsListScreenState();
@@ -120,30 +121,34 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen>
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(
-                                'RESTAURANTS \nIN DEINER NÄHE',
+                                widget.isFavourite
+                                    ? 'FAVORITEN RESTAURANTS \nIN DEINER NÄHE'
+                                    : 'RESTAURANTS \nIN DEINER NÄHE',
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 25),
                               ),
-                              Material(
-                                color: Color.fromRGBO(94, 135, 142, 1),
-                                shadowColor: Colors.black.withOpacity(0.8),
-                                elevation: 25.0,
-                                shape: CircleBorder(),
-                                clipBehavior: Clip.hardEdge,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 4.0),
-                                  child: InkWell(
-                                    child: new IconButton(
-                                      icon: new Icon(
-                                        MyFlutterApp.filter,
-                                        color: Colors.white,
-                                        size: 22,
+                              widget.isFavourite
+                                  ? Container()
+                                  : Material(
+                                      color: Color.fromRGBO(94, 135, 142, 1),
+                                      shadowColor: Colors.black.withOpacity(0.8),
+                                      elevation: 25.0,
+                                      shape: CircleBorder(),
+                                      clipBehavior: Clip.hardEdge,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(top: 4.0),
+                                        child: InkWell(
+                                          child: new IconButton(
+                                            icon: new Icon(
+                                              MyFlutterApp.filter,
+                                              color: Colors.white,
+                                              size: 22,
+                                            ),
+                                            onPressed: () => showFilter(context),
+                                          ),
+                                        ),
                                       ),
-                                      onPressed: () => showFilter(context),
                                     ),
-                                  ),
-                                ),
-                              ),
                             ]),
                       ),
                     ],
@@ -168,7 +173,7 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen>
                                     Provider.of<GeneralInfo>(context)
                                         .currentWeekdayIndex,
                                     currentPosition,
-                                    false),
+                                    widget.isFavourite),
                               ),
                             ],
                           ),
@@ -201,28 +206,5 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen>
             Provider.of<GeneralInfo>(context).foodCategoryFilter,
           );
         });
-  }
-}
-
-class _SliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    // TODO: implement build
-    return Container(color: Colors.white, child: Center(child: TitleSection()));
-  }
-
-  @override
-  // TODO: implement maxExtent
-  double get maxExtent => 100.0;
-
-  @override
-  // TODO: implement minExtent
-  double get minExtent => 0.0;
-
-  @override
-  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
-    // TODO: implement shouldRebuild
-    return true;
   }
 }
