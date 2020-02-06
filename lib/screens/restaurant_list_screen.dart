@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:lunch_app/providers/general_info.dart';
+import 'package:lunch_app/providers/restaurants.dart';
 import 'package:lunch_app/widgets/detail_scaffold.dart';
 import 'package:lunch_app/widgets/my_flutter_app_icons.dart';
 import 'package:lunch_app/widgets/restaurant_filter.dart';
@@ -86,6 +87,7 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen>
 
   @override
   Widget build(BuildContext context) {
+    final filterCount = Provider.of<GeneralInfo>(context).filterCounter;
     return Scaffold(
       body: DetailScaffold(
         hasPinnedAppBar: true,
@@ -129,26 +131,61 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen>
                               ),
                               widget.isFavourite
                                   ? Container()
-                                  : Material(
-                                      color: Color.fromRGBO(94, 135, 142, 1),
-                                      shadowColor: Colors.black.withOpacity(0.8),
-                                      elevation: 25.0,
-                                      shape: CircleBorder(),
-                                      clipBehavior: Clip.hardEdge,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(top: 4.0),
-                                        child: InkWell(
-                                          child: new IconButton(
-                                            icon: new Icon(
-                                              MyFlutterApp.filter,
-                                              color: Colors.white,
-                                              size: 22,
+                                  : IntrinsicHeight(
+                                    child: Stack(
+                                      overflow: Overflow.visible,
+                                      children: <Widget>[
+                                        Material(
+                                            color: Color.fromRGBO(94, 135, 142, 1),
+                                            shadowColor: Colors.black.withOpacity(0.8),
+                                            elevation: 25.0,
+                                            shape: CircleBorder(),
+                                            clipBehavior: Clip.hardEdge,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(top: 4.0),
+                                              child: InkWell(
+                                                child: new IconButton(
+                                                  icon: new Icon(
+                                                    MyFlutterApp.filter,
+                                                    color: Colors.white,
+                                                    size: 22,
+                                                  ),
+                                                  onPressed: () => showFilter(context),
+                                                ),
+                                              ),
                                             ),
-                                            onPressed: () => showFilter(context),
                                           ),
-                                        ),
-                                      ),
+                                        filterCount > 0
+                                        ? Positioned(
+                                            top: -10,
+                                            right: -10,
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                boxShadow: [BoxShadow(
+                                                  color: Colors.black.withOpacity(0.25),
+                                                  blurRadius: 4.0, // has the effect of softening the shadow
+                                                )],
+                                                color: Colors.white,
+                                                shape: BoxShape.circle,
+                                                border: Border.all(width: 2.0, color: Color.fromRGBO(94, 135, 142, 1))
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(7.0),
+                                                child: Text(
+                                                  filterCount.toString(),
+                                                  style: TextStyle(
+                                                    fontSize: 16.0,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Color.fromRGBO(94, 135, 142, 1)
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        : Container()
+                                      ],
                                     ),
+                                  ),
                             ]),
                       ),
                     ],
@@ -204,6 +241,24 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen>
           return new RestaurantFilter(
             Provider.of<GeneralInfo>(context).restaurantCategoryFilter,
             Provider.of<GeneralInfo>(context).foodCategoryFilter,
+              (foodCategoryFilter, restaurantCategoryFilter) async {
+                Navigator.of(context).pop();
+                Provider.of<GeneralInfo>(context).setLoadingRestaurants(true);
+                try {
+                  await Provider.of<GeneralInfo>(context).setRestaurantCategory(restaurantCategoryFilter);
+                  await Provider.of<GeneralInfo>(context).setFoodCategory(foodCategoryFilter);
+                  await Provider.of<Restaurants>(context).fetchAndSetRestaurants(
+                    foodCategoryFilter,
+                    restaurantCategoryFilter,
+                    Provider.of<GeneralInfo>(context).fromDate,
+                    Provider.of<GeneralInfo>(context).toDate,
+                  );
+                } catch (error) {
+                  Scaffold.of(context).showSnackBar(SnackBar(content: Text('Verbindungsprobleme')));
+                } finally {
+                  Provider.of<GeneralInfo>(context).setLoadingRestaurants(false);
+                }
+              }
           );
         });
   }

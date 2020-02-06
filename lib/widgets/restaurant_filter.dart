@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:lunch_app/providers/general_info.dart';
-import 'package:lunch_app/providers/restaurants.dart';
 import 'package:lunch_app/widgets/restaurantCategoryFilter.dart';
-import 'package:provider/provider.dart';
 
 import 'foodCategoryRestaurantFilter.dart';
 
 class RestaurantFilter extends StatefulWidget {
   final List<String> restaurantCategoryFilter;
   final List<String> foodCategoryFilter;
+  final void Function(List<String>, List<String>) activateFilter;
 
-  RestaurantFilter(this.restaurantCategoryFilter, this.foodCategoryFilter);
+  RestaurantFilter(this.restaurantCategoryFilter, this.foodCategoryFilter, this.activateFilter);
 
   @override
   _RestaurantFilterState createState() => _RestaurantFilterState();
@@ -122,16 +120,8 @@ class _RestaurantFilterState extends State<RestaurantFilter> {
                     textColor: Colors.white,
                     child: Text('BESTÄTIGEN'),
                     color: Color.fromRGBO(94, 135, 142, 1),
-                    onPressed: () {
-                      Provider.of<GeneralInfo>(context).setRestaurantCategory(this._restaurantCategoryFilter);
-                      Provider.of<GeneralInfo>(context).setFoodCategory(this._foodCategoryFilter);
-                      Provider.of<Restaurants>(context).fetchAndSetRestaurants(
-                        this._foodCategoryFilter,
-                        this._restaurantCategoryFilter,
-                        Provider.of<GeneralInfo>(context).fromDate,
-                        Provider.of<GeneralInfo>(context).toDate,
-                      );
-                      return Navigator.of(context).pop();
+                    onPressed: () async {
+                      widget.activateFilter(this._foodCategoryFilter, this._restaurantCategoryFilter);
                     },
                   ),
                 ),

@@ -10,6 +10,10 @@ class GeneralInfo with ChangeNotifier {
   List<String> _foodCategoryFilter = [];
   List<String> _restaurantCategoryFilter = [];
 
+  int get filterCounter  {
+    return foodCategoryFilter.length + restaurantCategoryFilter.length;
+  }
+
   List<DateTime> get weekDays  {
     return _weekDays != null ? [..._weekDays] : [];
   }

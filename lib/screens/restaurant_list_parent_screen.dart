@@ -123,8 +123,8 @@ class _RestaurantListParentScreenState
       await Provider.of<GeneralInfo>(context).setDateRangeAndWeekDays(
           weekdays[selectedIndex], weekdays[selectedIndex], weekdays);
       await Provider.of<Restaurants>(context).fetchAndSetRestaurants(
-        null,
-        null,
+        Provider.of<GeneralInfo>(context).foodCategoryFilter,
+        Provider.of<GeneralInfo>(context).restaurantCategoryFilter,
         weekdays[selectedIndex],
         weekdays[selectedIndex],
       );

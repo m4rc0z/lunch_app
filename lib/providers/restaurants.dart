@@ -17,6 +17,7 @@ import 'menu.dart';
 
 class Restaurants with ChangeNotifier {
   List<Restaurant> _items = [];
+  List<Restaurant> _unfilteredItems = [];
   Favorites _favoritesProvider;
   Position currLocation;
 
@@ -34,9 +35,13 @@ class Restaurants with ChangeNotifier {
     return [..._items];
   }
 
+  List<Restaurant> get unfilteredItems {
+    return [..._unfilteredItems];
+  }
+
   // TODO: maybe adapt to use also filtering of foodcategories?
   List<Restaurant> get favouriteItems {
-    return [..._items.where((i) => this._favoritesProvider.getFavoriteStatus(i.id))];
+    return [..._unfilteredItems.where((i) => this._favoritesProvider.getFavoriteStatus(i.id))];
   }
 
   bool _isFetching = false;
@@ -180,9 +185,13 @@ class Restaurants with ChangeNotifier {
           }));
 
           // TODO: do only fetch restaurants in parent restaurant screen and filter only for screens based on favorite status
+          if (foodCategoryFilter.length == 0 && restaurantCategoryFilter.length == 0) {
+            _unfilteredItems = loadedRestaurant;
+            sortRestaurantsByPosition(_unfilteredItems);
+          }
           _items = loadedRestaurant;
           if (this.currLocation != null) {
-            sortRestaurantsByPosition();
+            sortRestaurantsByPosition(_items);
           }
           _isFetching = false;
           c.complete(null);
@@ -210,8 +219,8 @@ class Restaurants with ChangeNotifier {
     }
   }
 
-  void sortRestaurantsByPosition() async {
-    _items.sort((a, b) {
+  void sortRestaurantsByPosition(List<Restaurant> items) async {
+    items.sort((a, b) {
       return a.distance.compareTo(b.distance);
     });
 
