@@ -61,6 +61,18 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
     super.dispose();
   }
 
+  goToMaps(restaurant) async {
+    String query = Uri.encodeComponent(
+        _restaurant.name + ' ' +
+            _restaurant.address.toString());
+    var url = 'http://maps.google.com/?q=$query';
+    if (await canLaunch(url)) {
+    await launch(url);
+    } else {
+    throw 'Could not launch $url';
+    }
+  }
+
   final String restaurantId;
 
   _RestaurantDetailScreenState(this.restaurantId, this.currentIndex);
@@ -257,20 +269,27 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
                                         horizontal: 15.0, vertical: 15.0),
                                     child: Container(
                                       child: _restaurant.mapImageUrl != null
-                                          ? CachedNetworkImage(
-                                        imageUrl: _restaurant.mapImageUrl,
-                                        placeholder: (context, url) =>
-                                            Container(
-                                                color: Colors.transparent,
-                                                child: FittedBox(
-                                                    fit: BoxFit.scaleDown,
-                                                    child: CircularProgressIndicator())
-                                            ),
-                                        errorWidget: (context, url, error) =>
-                                            Container(color: Color.fromRGBO(
-                                                189, 187, 173, 1)),
-                                        fit: BoxFit.cover,
-                                      )
+                                          ? Material(
+                                                child: InkWell(
+                                                  onTap: () => goToMaps(_restaurant),
+                                                  child: Container(
+                                                      child: CachedNetworkImage(
+                                                        imageUrl: _restaurant.mapImageUrl,
+                                                        placeholder: (context, url) =>
+                                                            Container(
+                                                                color: Colors.transparent,
+                                                                child: FittedBox(
+                                                                    fit: BoxFit.scaleDown,
+                                                                    child: CircularProgressIndicator())
+                                                            ),
+                                                        errorWidget: (context, url, error) =>
+                                                            Container(color: Color.fromRGBO(
+                                                                189, 187, 173, 1)),
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                  ),
+                                                )
+                                            )
                                           : Container(),
                                       alignment: Alignment.center,),
                                   ),
@@ -319,17 +338,7 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
                                                   fontWeight: FontWeight.bold),),
                                             ],
                                           ),
-                                          onPressed: () async {
-                                            String query = Uri.encodeComponent(
-                                                _restaurant.name + ' ' +
-                                                    _restaurant.address.toString());
-                                            var url = 'http://maps.google.com/?q=$query';
-                                            if (await canLaunch(url)) {
-                                              await launch(url);
-                                            } else {
-                                              throw 'Could not launch $url';
-                                            }
-                                          },
+                                          onPressed: () => goToMaps(_restaurant),
                                         )
                                       ],
                                     ),
