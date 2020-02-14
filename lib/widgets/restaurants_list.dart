@@ -61,7 +61,9 @@ class RestaurantsList extends StatelessWidget {
                                         imageUrl: restaurants[i].imageUrl,
                                         placeholder: (context, url) => Container(
                                           color: Colors.transparent,
-                                          child: FittedBox(fit: BoxFit.scaleDown, child: CircularProgressIndicator())
+                                          child: FittedBox(fit: BoxFit.scaleDown, child: CircularProgressIndicator(
+                                            valueColor: new AlwaysStoppedAnimation<Color>(Color.fromRGBO(94, 135, 142, 1)),
+                                          ))
                                         ),
                                         errorWidget: (context, url, error) => Container(color: Color.fromRGBO(189, 187, 173, 1)),
                                         fit: BoxFit.fitWidth,
@@ -166,9 +168,12 @@ class RestaurantsList extends StatelessWidget {
           ),
         ),
       )
-      : Container(child: Text(this.onlyFavourites
-          ? 'Es bieten keine deiner Favoriten Restaurants Menüs an dem ausgewählten Tag an.'
-          : 'Es bieten keine Restaurants Menüs an dem ausgewählten Tag an.'))
+      : Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Container(child: Text(this.onlyFavourites
+            ? 'Es bieten keine deiner Favoriten Restaurants Menüs an dem ausgewählten Tag an.'
+            : 'Es bieten keine Restaurants Menüs an dem ausgewählten Tag an.')),
+      )
     );
   }
 

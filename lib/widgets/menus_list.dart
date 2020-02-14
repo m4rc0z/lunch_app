@@ -143,8 +143,11 @@ class MenusList extends StatelessWidget {
                 ),
               ),
         )
-            : Container(child: Text(
-            'Es bieten keine Restaurants Menüs an dem ausgewählten Tag an.'))
+            : Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Container(child: Text(
+              'Es bieten keine Restaurants Menüs an dem ausgewählten Tag an.')),
+            )
     );
   }
 

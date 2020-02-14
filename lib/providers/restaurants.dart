@@ -126,7 +126,7 @@ class Restaurants with ChangeNotifier {
     Geolocator geoLocator = Geolocator();
     var response;
 
-    var url;
+    var url = environment['baseUrl'];
     if (foodCategoryFilter != null && foodCategoryFilter.length > 0) {
       url = environment['baseUrl'] + '/restaurants?categories=' +
           foodCategoryFilter.join(',') + '&fromDate=' +
@@ -185,7 +185,7 @@ class Restaurants with ChangeNotifier {
           }));
 
           // TODO: do only fetch restaurants in parent restaurant screen and filter only for screens based on favorite status
-          if (foodCategoryFilter.length == 0 && restaurantCategoryFilter.length == 0) {
+          if ((foodCategoryFilter == null || foodCategoryFilter.length == 0) && (restaurantCategoryFilter == null || restaurantCategoryFilter.length == 0)) {
             _unfilteredItems = loadedRestaurant;
             sortRestaurantsByPosition(_unfilteredItems);
           }

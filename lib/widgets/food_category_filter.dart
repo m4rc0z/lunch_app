@@ -33,19 +33,17 @@ class FoodCategoryFilter extends StatelessWidget {
                       ),
                     ),
                   )),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 7.0),
-                    child: Wrap(
+                  Wrap(
                       alignment: WrapAlignment.spaceEvenly,
                         children: <Widget>[
                       ...this.foodCategories.map((fc) {
                         return Padding(
                             padding:
-                                const EdgeInsets.symmetric(horizontal: 3.0),
+                                const EdgeInsets.symmetric(horizontal: 3.0, vertical: 7.0),
                             child: ConstrainedBox(
                               constraints: new BoxConstraints(
                                 minHeight: 30.0,
-                                minWidth: 110.0,
+                                minWidth: (MediaQuery.of(context).size.width / 3) - 20,
                               ),
                               child: Container(
                                   height: 50,
@@ -81,8 +79,7 @@ class FoodCategoryFilter extends StatelessWidget {
                                         )),
                             ));
                       })
-                    ]),
-                  ),
+                  ]),
                 ],
               )
             : Container());

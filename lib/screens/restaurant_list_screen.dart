@@ -157,8 +157,8 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen>
                                           ),
                                         filterCount > 0
                                         ? Positioned(
-                                            top: -10,
-                                            right: -10,
+                                            top: -8,
+                                            right: -8,
                                             child: Container(
                                               decoration: BoxDecoration(
                                                 boxShadow: [BoxShadow(
@@ -170,11 +170,11 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen>
                                                 border: Border.all(width: 2.0, color: Color.fromRGBO(94, 135, 142, 1))
                                               ),
                                               child: Padding(
-                                                padding: const EdgeInsets.all(7.0),
+                                                padding: const EdgeInsets.all(5.0),
                                                 child: Text(
                                                   filterCount.toString(),
                                                   style: TextStyle(
-                                                    fontSize: 16.0,
+                                                    fontSize: 15.0,
                                                     fontWeight: FontWeight.bold,
                                                     color: Color.fromRGBO(94, 135, 142, 1)
                                                   ),
@@ -217,7 +217,9 @@ class _RestaurantsListScreenState extends State<RestaurantsListScreen>
                         )
                       : Container(
                           child: Center(
-                            child: CircularProgressIndicator(),
+                            child: CircularProgressIndicator(
+                              valueColor: new AlwaysStoppedAnimation<Color>(Color.fromRGBO(94, 135, 142, 1)),
+                            ),
                           ),
                         ),
                 );

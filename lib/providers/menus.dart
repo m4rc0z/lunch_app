@@ -75,7 +75,6 @@ class Menus with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       ErrorLogger.logError(error);
-      throw (error);
     }
   }
 

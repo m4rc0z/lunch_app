@@ -143,18 +143,15 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
                 child: Container(),                           // Add this code
               ),
               backgroundColor: Colors.white,
-              title: AnimatedOpacity(
-                opacity: isShrink ? 1.0 : 0.0,
-                duration: Duration(milliseconds: 300),
-                child: Text(
-                  _restaurant.name.toUpperCase(),
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 22.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+              title: isShrink ? Text(
+                _restaurant.name.toUpperCase(),
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: isShrink ? 18.0 : 22.0,
+                  fontWeight: FontWeight.bold,
                 ),
-              ),
+              )
+              : Container(),
               actions: <Widget>[
                 Row(
                   children: <Widget>[
@@ -186,7 +183,9 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
                                   imageUrl: _restaurant.imageUrl,
                                   placeholder: (context, url) => Container(
                                       color: Colors.transparent,
-                                      child: FittedBox(fit: BoxFit.scaleDown, child: CircularProgressIndicator())
+                                      child: FittedBox(fit: BoxFit.scaleDown, child: CircularProgressIndicator(
+                                        valueColor: new AlwaysStoppedAnimation<Color>(Color.fromRGBO(94, 135, 142, 1)),
+                                      ))
                                   ),
                                   errorWidget: (context, url, error) => Container(color: Color.fromRGBO(189, 187, 173, 1)),
                                   fit: BoxFit.fitWidth,
@@ -220,7 +219,9 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
                     ),
                     Container(child:
                     (_isLoading) ? Container(child: Center(
-                      child: CircularProgressIndicator(),
+                      child: CircularProgressIndicator(
+                        valueColor: new AlwaysStoppedAnimation<Color>(Color.fromRGBO(94, 135, 142, 1)),
+                      )
                     )) : Container(
                         child: MediaQuery.removePadding(
                           context: context,
@@ -280,7 +281,9 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> with Ti
                                                                 color: Colors.transparent,
                                                                 child: FittedBox(
                                                                     fit: BoxFit.scaleDown,
-                                                                    child: CircularProgressIndicator())
+                                                                    child: CircularProgressIndicator(
+                                                                      valueColor: new AlwaysStoppedAnimation<Color>(Color.fromRGBO(94, 135, 142, 1)),
+                                                                    ))
                                                             ),
                                                         errorWidget: (context, url, error) =>
                                                             Container(color: Color.fromRGBO(
