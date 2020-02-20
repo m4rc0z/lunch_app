@@ -1,5 +1,5 @@
 name: lunch_app
-description: A new Flutter project.
+description: An app that shows you menus nearby
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -11,7 +11,7 @@ description: A new Flutter project.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 0.0.2+6
+version: 0.0.2+8
 
 environment:
   sdk: ">=2.5.0 <3.0.0"
@@ -24,7 +24,7 @@ dependencies:
   http: 0.12.0+2
   hive: 1.1.0
   hive_flutter: 0.2.1
-  path_provider: 1.3.1
+  path_provider: 1.6.0
   geolocator: 5.1.4
   cached_network_image: 2.0.0
   sentry: 3.0.0
@@ -33,8 +33,16 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: 0.7.4
   hive_generator: 0.5.2
   build_runner:
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "dev_assets/Meal_IT_logo_big.png"
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "dev_assets/Meal_IT_logo_big_adaptive.png"
 
 
 # For information on the generic Dart part of this file, see the
