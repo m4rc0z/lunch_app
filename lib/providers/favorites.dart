@@ -34,6 +34,9 @@ class Favorites with ChangeNotifier {
   }
 
   bool getFavoriteStatus(String restaurantId) {
+    if (_box == null) {
+      return false;
+    }
     var fav = _box.get(restaurantId);
     return fav != null ? fav : false;
   }
