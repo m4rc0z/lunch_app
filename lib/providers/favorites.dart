@@ -5,6 +5,7 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 
 class Favorites with ChangeNotifier {
+  Future<void> _boxFuture;
 
   Favorites() {
     this.initDB();
@@ -17,18 +18,29 @@ class Favorites with ChangeNotifier {
     String path = appDir.path;
     Hive.init(path);
     var future = Hive.openBox('favoriteBox');
+    _boxFuture = future;
     future.then((Box value) {
-        _box = value;
+      _box = value;
     });
     return future;
   }
 
   toggleFavorite(String restaurantId) {
-    var favorite = _box.get(restaurantId);
+    if (_box == null) {
+      _boxFuture.then((box) => {
+          _setFavoriteStatusAndNotify(_box, restaurantId)
+      });
+    } else {
+      _setFavoriteStatusAndNotify(_box, restaurantId);
+    }
+  }
+
+  _setFavoriteStatusAndNotify(Box<dynamic> box, String restaurantId) {
+    var favorite = box.get(restaurantId);
     if (favorite == null) {
-      _box.put(restaurantId, true);
+      box.put(restaurantId, true);
     } else{
-      _box.put(restaurantId, !favorite);
+      box.put(restaurantId, !favorite);
     }
     notifyListeners();
   }
